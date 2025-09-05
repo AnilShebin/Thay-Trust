@@ -41,7 +41,7 @@ export default function Featured() {
               className="group/btn border-primary text-primary hover:bg-primary hover:text-primary-foreground mt-auto bg-transparent"
               asChild
             >
-              <Link href="/programs">
+              <Link href="/education">
                 Read More
                 <ArrowRight className="ml-2 size-4 transition-transform group-hover/btn:translate-x-1" />
               </Link>

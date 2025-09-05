@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Content() {
   return (
     <section className="px-4 py-12 sm:px-6 sm:py-16 md:px-8 md:py-20 lg:px-24 lg:py-24">
@@ -18,9 +20,9 @@ export default function Content() {
               <span className="text-xl font-semibold">ThayTrust</span>
             </div>
             <blockquote className="mb-6 text-xl font-medium leading-relaxed md:text-2xl">
-              ThayTrust has been a beacon of hope for our community. Their educational programs helped my children
-              access quality learning, and their healthcare initiatives ensured our family stayed healthy during
-              difficult times.
+              ThayTrust has been a beacon of hope for our community. Their educational programs
+              helped my children access quality learning, and their healthcare initiatives ensured
+              our family stayed healthy during difficult times.
             </blockquote>
             <footer>
               <cite className="not-italic">
@@ -34,27 +36,31 @@ export default function Content() {
         {/* Company Info */}
         <div className="space-y-8">
           <div>
-            <div className="mb-3 text-sm font-medium text-primary uppercase tracking-wide">Our Mission</div>
+            <div className="mb-3 text-sm font-medium text-primary uppercase tracking-wide">
+              Our Mission
+            </div>
             <h2 className="mb-6 text-3xl font-bold tracking-tight text-balance md:text-4xl lg:text-5xl">
               Empowering communities through education, healthcare & sustainable development
             </h2>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              ThayTrust is dedicated to creating lasting positive change in underserved communities across India. We
-              believe that every individual deserves access to quality education, healthcare, and opportunities for
-              growth.
+              ThayTrust is dedicated to creating lasting positive change in underserved communities
+              across India. We believe that every individual deserves access to quality education,
+              healthcare, and opportunities for growth.
             </p>
           </div>
 
           <div className="space-y-6">
             <p className="text-muted-foreground leading-relaxed">
-              Our comprehensive approach addresses the root causes of inequality through targeted interventions. From
-              mobile health clinics reaching remote villages to scholarship programs supporting bright minds, we work
-              tirelessly to break the cycle of poverty and create pathways to prosperity.
+              Our comprehensive approach addresses the root causes of inequality through targeted
+              interventions. From mobile health clinics reaching remote villages to scholarship
+              programs supporting bright minds, we work tirelessly to break the cycle of poverty and
+              create pathways to prosperity.
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              We partner with local communities, government agencies, and like-minded organizations to maximize our
-              impact. Every program is designed with sustainability in mind, ensuring that the communities we serve can
-              continue to thrive long after our direct involvement.
+              We partner with local communities, government agencies, and like-minded organizations
+              to maximize our impact. Every program is designed with sustainability in mind,
+              ensuring that the communities we serve can continue to thrive long after our direct
+              involvement.
             </p>
           </div>
 
@@ -78,7 +84,7 @@ export default function Content() {
             </div>
           </div>
 
-          <a
+          <Link
             href="/about"
             className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors"
           >
@@ -86,7 +92,7 @@ export default function Content() {
             <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
-          </a>
+          </Link>
         </div>
       </div>
     </section>
