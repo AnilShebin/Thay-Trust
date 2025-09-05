@@ -13,8 +13,8 @@ const Home = () => {
     <div>
       <Hero />
       <MissionSection />
-      <Content />
       <Featured />
+      <Content />
       <LatestNews />
       <FeaturesSectionWithHoverEffects />
       <Stats />

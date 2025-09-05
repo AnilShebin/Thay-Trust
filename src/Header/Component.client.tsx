@@ -12,12 +12,14 @@ import { HeaderNav } from './Nav'
 import { HandCoins, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { AdminBar } from '@/components/AdminBar'
 
 interface HeaderClientProps {
   data: Header
+  adminBarProps?: { preview?: boolean }
 }
 
-export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
+export const HeaderClient: React.FC<HeaderClientProps> = ({ data, adminBarProps }) => {
   const [theme, setTheme] = useState<string | null>(null)
   const { headerTheme, setHeaderTheme } = useHeaderTheme()
   const pathname = usePathname()
@@ -53,6 +55,9 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
       }`}
       {...(theme ? { 'data-theme': theme } : {})}
     >
+      {/* ✅ Admin bar always rendered at the top */}
+      <AdminBar adminBarProps={adminBarProps} />
+
       <nav className="flex h-18 items-center justify-between px-4 sm:px-8 md:px-16 lg:px-24 py-1 sm:py-2">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2 group">
