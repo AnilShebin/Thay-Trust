@@ -1,9 +1,10 @@
 // storage-adapter-import-placeholder
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 
 import sharp from 'sharp' // sharp-import
 import path from 'path'
-import { buildConfig, PayloadRequest } from 'payload'
+import { buildConfig, type PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
@@ -72,8 +73,18 @@ export default buildConfig({
   plugins: [
     ...plugins,
     // storage-adapter-placeholder
+    vercelBlobStorage({
+      enabled: true, // Optional, defaults to true
+      // Specify which collections should use Vercel Blob
+      collections: {
+        media: true,
+      },
+      // Token provided by Vercel once Blob storage is added to your Vercel project
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+      clientUploads: true, // Enable client uploads to bypass Vercel's 4.5MB server limit
+    }),
   ],
-    email: nodemailerAdapter({
+  email: nodemailerAdapter({
     defaultFromAddress: process.env.SMTP_FROM_ADDRESS || 'info@payloadcms.com',
     defaultFromName: process.env.SMTP_FROM_NAME || 'Payload',
     transportOptions: {
