@@ -1,23 +1,26 @@
-"use client"
-import { useHeaderTheme } from "@/providers/HeaderTheme"
-import type React from "react"
-import { useEffect } from "react"
+'use client'
+import { useHeaderTheme } from '@/providers/HeaderTheme'
+import type React from 'react'
+import { useEffect } from 'react'
 
-import type { Page } from "@/payload-types"
+import type { Page } from '@/payload-types'
 
-import { CMSLink } from "@/components/Link"
-import { Media } from "@/components/Media"
-import RichText from "@/components/RichText"
+import { CMSLink } from '@/components/Link'
+import { Media } from '@/components/Media'
+import RichText from '@/components/RichText'
 
-export const HighImpactHero: React.FC<Page["hero"]> = ({ links, media, richText }) => {
+export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText }) => {
   const { setHeaderTheme } = useHeaderTheme()
 
   useEffect(() => {
-    setHeaderTheme("dark")
+    setHeaderTheme('dark')
   })
 
   return (
-    <div className="relative -mt-[10.4rem] flex items-center justify-center text-white min-h-screen" data-theme="dark">
+    <div
+      className="relative -mt-[5.4rem] flex items-center justify-center text-white min-h-screen"
+      data-theme="dark"
+    >
       <div className="absolute inset-0 bg-black/40 z-[1]" />
 
       <div className="container relative z-10 px-4 sm:px-6 lg:px-8 py-20 sm:py-24 lg:py-32">
@@ -25,7 +28,7 @@ export const HighImpactHero: React.FC<Page["hero"]> = ({ links, media, richText 
           {richText && (
             <div className="mb-8 sm:mb-10 lg:mb-12">
               <RichText
-                className="text-lg sm:text-xl lg:text-2xl leading-relaxed"
+                className="text-lg sm:text-xl lg:text-2xl leading-relaxed [&_h1]:text-4xl [&_h1]:sm:text-5xl [&_h1]:lg:text-6xl [&_h1]:font-bold"
                 data={richText}
                 enableGutter={false}
               />
@@ -50,7 +53,7 @@ export const HighImpactHero: React.FC<Page["hero"]> = ({ links, media, richText 
       </div>
 
       <div className="absolute inset-0 z-0">
-        {media && typeof media === "object" && (
+        {media && typeof media === 'object' && (
           <Media fill imgClassName="object-cover object-center" priority resource={media} />
         )}
       </div>
