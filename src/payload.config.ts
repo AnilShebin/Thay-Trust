@@ -17,7 +17,11 @@ import { Users } from "./collections/Users"
 import { Footer } from "./Footer/config"
 import { Header } from "./Header/config"
 import { plugins } from "./plugins"
-import { defaultLexical } from "@/fields/defaultLexical"
+import {
+  LinkFeature,
+  UploadFeature,
+  lexicalEditor,
+} from '@payloadcms/richtext-lexical'
 import { getServerSideURL } from "./utilities/getURL"
 
 const filename = fileURLToPath(import.meta.url)
@@ -61,7 +65,44 @@ export default buildConfig({
     },
   },
   // This config helps us configure global or default features that the other editors can inherit
-  editor: defaultLexical,
+    editor: lexicalEditor({
+    features: ({ defaultFeatures, rootFeatures }) => [
+      ...defaultFeatures,
+      LinkFeature({
+        // Example showing how to customize the built-in fields
+        // of the Link feature
+        fields: ({ defaultFields }) => [
+          ...defaultFields,
+          {
+            name: 'rel',
+            label: 'Rel Attribute',
+            type: 'select',
+            hasMany: true,
+            options: ['noopener', 'noreferrer', 'nofollow'],
+            admin: {
+              description:
+                'The rel attribute defines the relationship between a linked resource and the current document. This is a custom link field.',
+            },
+          },
+        ],
+      }),
+      UploadFeature({
+        collections: {
+          uploads: {
+            // Example showing how to customize the built-in fields
+            // of the Upload feature
+            fields: [
+              {
+                name: 'caption',
+                type: 'richText',
+                editor: lexicalEditor(),
+              },
+            ],
+          },
+        },
+      }),
+    ],
+  }),
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI || "",
