@@ -8,25 +8,152 @@ import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
 import { CMSLink } from '@/components/Link'
 import { Logo } from '@/components/Logo/Logo'
 
+import { Facebook, Instagram, Twitter } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+
 export async function Footer() {
   const footerData: Footer = await getCachedGlobal('footer', 1)()
-
   const navItems = footerData?.navItems || []
 
   return (
-    <footer className="mt-auto border-t border-border bg-black dark:bg-card text-white">
-      <div className="container py-8 gap-8 flex flex-col md:flex-row md:justify-between">
-        <Link className="flex items-center" href="/">
-          <Logo />
-        </Link>
+    <footer className="w-full border-t border-borde dark:bg-card">
+      <div className="mx-auto px-4 sm:px-8 md:px-16 lg:px-24 py-8">
+        {/* Main layout */}
+        <div className="grid grid-cols-1 gap-10 text-center lg:grid-cols-12 lg:text-left">
+          {/* Left column */}
+          <div className="flex flex-col items-center space-y-6 lg:col-span-5 lg:items-start">
+            <div className="flex items-center justify-center lg:justify-start">
+              {/* Logo */}
+              <Link href="/" className="flex items-center space-x-2 group">
+                <Logo loading="eager" priority="high" />
+                <div className="flex flex-col justify-center">
+                  <span className={`text-xl font-bold italic leading-none`}>Thay</span>
+                  <span className={`text-xl font-bold italic leading-none`}>Trust</span>
+                </div>
+              </Link>
+            </div>
+            <p className="mt-2 max-w-md text-sm text-muted-foreground">
+              Taste the difference with fast delivery, smooth pickups, and a dine-in experience
+              you&apos;ll crave.
+            </p>
+            <div className="mt-2 flex justify-center space-x-4 lg:justify-start">
+              <Link
+                href="#"
+                className="flex size-9 items-center justify-center rounded-full 
+               bg-primary/5 text-primary transition-all 
+               hover:bg-primary/10 hover:text-primary/80 
+               dark:bg-secondary dark:text-primary 
+               dark:hover:bg-secondary/80 dark:hover:text-primary/80"
+              >
+                <Facebook className="size-4" />
+                <span className="sr-only">Facebook</span>
+              </Link>
+              <Link
+                href="#"
+                className="flex size-9 items-center justify-center rounded-full 
+               bg-primary/5 text-primary transition-all 
+               hover:bg-primary/10 hover:text-primary/80 
+               dark:bg-secondary dark:text-primary 
+               dark:hover:bg-secondary/80 dark:hover:text-primary/80"
+              >
+                <Instagram className="size-4" />
+                <span className="sr-only">Instagram</span>
+              </Link>
+              <Link
+                href="#"
+                className="flex size-9 items-center justify-center rounded-full 
+               bg-primary/5 text-primary transition-all 
+               hover:bg-primary/10 hover:text-primary/80 
+               dark:bg-secondary dark:text-primary 
+               dark:hover:bg-secondary/80 dark:hover:text-primary/80"
+              >
+                <Twitter className="size-4" />
+                <span className="sr-only">Twitter</span>
+              </Link>
+            </div>
+          </div>
 
-        <div className="flex flex-col-reverse items-start md:flex-row gap-4 md:items-center">
-          <ThemeSelector />
-          <nav className="flex flex-col md:flex-row gap-4">
-            {navItems.map(({ link }, i) => {
-              return <CMSLink className="text-white" key={i} {...link} />
-            })}
-          </nav>
+          {/* Right column */}
+          <div className="lg:col-span-7">
+            <div className="grid grid-cols-1 gap-8 text-center md:grid-cols-3 md:text-left">
+              {/* Dynamic nav links */}
+              <div className="flex flex-col items-center md:items-start space-y-2">
+                <h3 className="text-base font-semibold text-primary">Quick Links</h3>
+                <nav className="flex flex-col gap-2 text-sm">
+                  {navItems.map(({ link }, i) => (
+                    <CMSLink
+                      key={i}
+                      {...link}
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    />
+                  ))}
+                </nav>
+              </div>
+
+              {/* Theme Switcher */}
+              <div className="flex flex-col items-center md:items-start space-y-2 relative z-10">
+                <h3 className="text-base font-semibold text-primary">Theme</h3>
+                <ThemeSelector />
+              </div>
+
+              {/* Newsletter */}
+              <div className="flex flex-col items-center space-y-2.5 md:items-start">
+                <h3 className="text-base font-semibold text-primary">Get in touch</h3>
+                <p className="text-sm text-muted-foreground">
+                  Stay updated with our latest offers and updates.
+                </p>
+                <div className="mt-2 w-full max-w-sm space-y-3">
+                  <div className="relative w-full">
+                    <Input
+                      type="email"
+                      placeholder="Your email"
+                      className="h-10 w-full rounded-md border-none bg-input/30 pl-3 pr-24 text-foreground placeholder:text-muted-foreground focus:ring-primary/30"
+                    />
+                    <Button
+                      type="submit"
+                      className="absolute right-1 top-1 h-8 rounded-md bg-primary px-3 text-xs font-medium text-primary-foreground dark:text-foreground hover:bg-primary/90"
+                    >
+                      Subscribe
+                    </Button>
+                  </div>
+                  <p className="text-center text-xs text-muted-foreground md:text-left">
+                    By subscribing you agree to our{' '}
+                    <Link href="#" className="text-primary underline hover:text-primary/80">
+                      Privacy Policy
+                    </Link>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer Bottom */}
+        <div className="mt-10 flex flex-col items-center justify-center space-y-2.5 border-t border-border pt-6 text-center md:flex-row md:justify-between md:space-y-0">
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} Pandora Box. All rights reserved.
+          </p>
+          <div className="flex space-x-4">
+            <Link
+              href="#"
+              className="text-xs text-muted-foreground transition-colors hover:text-primary"
+            >
+              Terms
+            </Link>
+            <Link
+              href="#"
+              className="text-xs text-muted-foreground transition-colors hover:text-primary"
+            >
+              Privacy
+            </Link>
+            <Link
+              href="#"
+              className="text-xs text-muted-foreground transition-colors hover:text-primary"
+            >
+              Cookies
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

@@ -49,37 +49,38 @@
   }
 
   [data-theme='dark'] {
-    --background: 210 25% 8%; /* #1a1f2e */
-    --foreground: 0 0% 100%; /* #ffffff */
-    --card: 220 22% 17%; /* #1a1f2e */
-    --card-foreground: 0 0% 100%; /* #ffffff */
-    --popover: 220 22% 17%; /* #1a1f2e */
-    --popover-foreground: 0 0% 100%; /* #ffffff */
-    --primary: 142 25% 53%; /* #80ae82 */
-    --primary-foreground: 210 25% 6%; /* #0f1419 */
-    --secondary: 142 72% 18%; /* #1c4827 */
-    --secondary-foreground: 100 100% 94%; /* #eeffec */
-    --muted: 220 22% 17%; /* #1a1f2e */
-    --muted-foreground: 210 5% 63%; /* #9ca3af */
-    --accent: 142 72% 18%; /* #186822 */
-    --accent-foreground: 100 100% 94%; /* #eeffec */
-    --destructive: 4 90% 64%; /* #ef4444 */
-    --border: 210 9% 22%; /* #374151 */
-    --input: 210 9% 22%; /* #374151 */
-    --ring: 75 45% 78%; /* #d0dc9f */
-    --chart-1: 142 25% 53%; /* #80ae82 */
-    --chart-2: 75 45% 78%; /* #d0dc9f */
-    --chart-3: 142 72% 18%; /* #186822 */
-    --chart-4: 100 100% 94%; /* #eeffec */
-    --chart-5: 142 72% 18%; /* #1c4827 */
-    --sidebar: 220 22% 17%; /* #1a1f2e */
-    --sidebar-foreground: 0 0% 100%; /* #ffffff */
-    --sidebar-primary: 142 25% 53%; /* #80ae82 */
-    --sidebar-primary-foreground: 210 25% 6%; /* #0f1419 */
-    --sidebar-accent: 142 72% 18%; /* #1c4827 */
-    --sidebar-accent-foreground: 100 100% 94%; /* #eeffec */
-    --sidebar-border: 210 9% 22%; /* #374151 */
-    --sidebar-ring: 75 45% 78%; /* #d0dc9f */
+    --primary: 128 63% 25%;
+    --primary-foreground: 149 89% 11%;
+    --secondary: 149 17% 11%;
+    --secondary-foreground: 149 17% 71%;
+    --background: 149 56% 0%;
+    --foreground: 149 15% 97%;
+    --card: 149 56% 0%;
+    --card-foreground: 149 15% 97%;
+    --popover: 149 56% 0%;
+    --popover-foreground: 149 15% 97%;
+    --muted: 149 16% 11%;
+    --muted-foreground: 149 8% 65%;
+    --accent: 149 23% 18%;
+    --accent-foreground: 149 23% 78%;
+    --destructive: 21 91% 50%;
+    --destructive-foreground: 0 0% 0%;
+    --border: 149 3% 14%;
+    --input: 149 3% 14%;
+    --ring: 149 89% 51%;
+    --chart-1: 128 63% 25%;
+    --chart-2: 149 23% 78%;
+    --chart-3: 149 17% 11%;
+    --chart-4: 149 15% 97%;
+    --chart-5: 149 23% 18%;
+    --sidebar: 149 56% 0%;
+    --sidebar-foreground: 149 15% 97%;
+    --sidebar-primary: 128 63% 25%;
+    --sidebar-primary-foreground: 149 89% 11%;
+    --sidebar-accent: 149 23% 18%;
+    --sidebar-accent-foreground: 149 23% 78%;
+    --sidebar-border: 149 3% 14%;
+    --sidebar-ring: 149 89% 51%;
   }
 }
 

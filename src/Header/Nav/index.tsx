@@ -29,8 +29,8 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
     }
 
     return isScrolled || pathname !== '/'
-      ? 'text-custom-green hover:text-primary'
-      : 'text-white hover:text-primary'
+      ? 'text-foreground hover:text-primary'
+      : 'text-foreground hover:text-primary'
   }
 
   return (

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Content() {
   return (
-    <section className="px-4 py-12 sm:px-6 sm:py-16 md:px-8 md:py-20 lg:px-24 lg:py-24">
+    <section className="px-4 py-12 sm:px-6 sm:py-16 md:px-8 md:py-20">
       <div className="mx-auto max-w-7xl grid items-center gap-12 lg:grid-cols-2">
         {/* Testimonial Card */}
         <div className="relative h-full overflow-hidden">

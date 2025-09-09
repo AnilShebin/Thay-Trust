@@ -42,18 +42,13 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, adminBarProps 
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Dynamic text color (white on top of homepage, green otherwise)
-  const thayTrustTextColor =
-    isScrolled || pathname !== '/' ? 'text-custom-green' : 'text-white'
-
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
         isScrolled
-          ? 'backdrop-blur-md bg-muted/70 border-b border-border/50 shadow-sm'
-          : 'bg-transparent border-b border-transparent'
+          ? 'backdrop-blur-md bg-muted/70 shadow-sm'
+          : 'bg-transparent'
       }`}
-      {...(theme ? { 'data-theme': theme } : {})}
     >
       {/* ✅ Admin bar always rendered at the top */}
       <AdminBar adminBarProps={adminBarProps} />
@@ -61,29 +56,17 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, adminBarProps 
       <nav className="flex h-18 items-center justify-between px-4 sm:px-8 md:px-16 lg:px-24 py-1 sm:py-2">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2 group">
-          <Logo
-            loading="eager"
-            priority="high"
-            className="invert dark:invert-0"
-          />
+          <Logo loading="eager" priority="high" />
           <div className="flex flex-col justify-center">
-            <span
-              className={`text-xl font-bold italic leading-none ${thayTrustTextColor}`}
-            >
-              Thay
-            </span>
-            <span
-              className={`text-xl font-bold italic leading-none ${thayTrustTextColor}`}
-            >
-              Trust
-            </span>
+            <span className={`text-xl font-bold italic leading-none`}>Thay</span>
+            <span className={`text-xl font-bold italic leading-none`}>Trust</span>
           </div>
         </Link>
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-8">
           <HeaderNav data={data} />
-          <Button className="shadow-sm hover:shadow-md transition-all duration-300 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl">
+          <Button className="shadow-sm hover:shadow-md transition-all duration-300 bg-primary dark:text-foreground hover:bg-primary/90 text-primary-foreground rounded-xl">
             <Link href="/donate" className="flex items-center gap-2">
               <HandCoins className="w-4 h-4" />
               Donate
@@ -101,8 +84,8 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, adminBarProps 
                 isScrolled
                   ? 'text-foreground hover:text-primary'
                   : pathname === '/'
-                  ? 'text-white hover:text-primary'
-                  : 'text-primary hover:text-primary'
+                    ? 'text-white hover:text-primary'
+                    : 'text-primary hover:text-primary'
               }`}
             >
               <Menu className="size-5" />
@@ -115,24 +98,12 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, adminBarProps 
           >
             <div className="flex flex-col h-full">
               {/* Mobile Header */}
-              <div className="flex items-center p-6 border-b border-border/50">
+              <div className="flex items-center p-6">
                 <Link href="/" className="flex items-center space-x-2 group">
-                  <Logo
-                    loading="eager"
-                    priority="high"
-                    className="invert dark:invert-0"
-                  />
+                  <Logo loading="eager" priority="high" />
                   <div className="flex flex-col justify-center">
-                    <span
-                      className={`text-xl font-bold italic leading-none ${thayTrustTextColor}`}
-                    >
-                      Thay
-                    </span>
-                    <span
-                      className={`text-xl font-bold italic leading-none ${thayTrustTextColor}`}
-                    >
-                      Trust
-                    </span>
+                    <span className={`text-xl font-bold italic leading-none`}>Thay</span>
+                    <span className={`text-xl font-bold italic leading-none`}>Trust</span>
                   </div>
                 </Link>
               </div>
@@ -143,11 +114,8 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, adminBarProps 
               </div>
 
               {/* Mobile Footer */}
-              <div className="p-6 border-t border-border/50">
-                <Button
-                  asChild
-                  className="w-full text-lg py-6 bg-primary hover:bg-primary/90"
-                >
+              <div className="p-6">
+                <Button asChild className="w-full text-lg py-6 bg-primary dark:text-foreground hover:bg-primary/90">
                   <Link href="/donate" onClick={() => setIsOpen(false)}>
                     Donate Now
                   </Link>
