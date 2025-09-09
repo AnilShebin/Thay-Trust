@@ -1,12 +1,13 @@
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Calendar, ArrowRight } from 'lucide-react'
-import Link from 'next/link'
-import Image from 'next/image'
-import configPromise from '@payload-config'
-import { getPayload } from 'payload'
-import React from 'react'
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Calendar, ArrowRight } from "lucide-react"
+import Link from "next/link"
+import Image from "next/image"
+import configPromise from "@payload-config"
+import { getPayload } from "payload"
+import RichText from "@/components/RichText"
+import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical"
 
 export const revalidate = 600 // ISR for 10 minutes
 
@@ -18,50 +19,79 @@ type NewsItem = {
   date: { day: string; month: string }
   category?: string
   image?: string
+  author?: string
+  content?: DefaultTypedEditorState
+}
+
+function extractTextFromLexical(content: DefaultTypedEditorState): string {
+  if (!content?.root?.children) return ""
+
+  let text = ""
+
+  function extractFromNode(node: any): void {
+    if (node.type === "text") {
+      text += node.text || ""
+    } else if (node.children) {
+      node.children.forEach(extractFromNode)
+    }
+  }
+
+  content.root.children.forEach(extractFromNode)
+  return text.trim()
 }
 
 export default async function LatestNews() {
   const payload = await getPayload({ config: configPromise })
 
   const posts = await payload.find({
-    collection: 'posts',
-    depth: 1,
+    collection: "posts",
+    depth: 2,
     limit: 10,
-    sort: '-createdAt',
+    sort: "-createdAt",
     overrideAccess: false,
   })
 
-  const baseURL =
-    process.env.NEXT_PUBLIC_SERVER_URL ||
-    process.env.__NEXT_PRIVATE_ORIGIN ||
-    'http://localhost:3000'
+  const baseURL = process.env.NEXT_PUBLIC_SERVER_URL || process.env.__NEXT_PRIVATE_ORIGIN || "http://localhost:3000"
 
   const newsItems: NewsItem[] = posts.docs.map((doc: any) => {
-    // Ensure heroImage is used and URL is absolute
-    let imageUrl = '/placeholder.svg'
+    let imageUrl = "/placeholder.svg?height=300&width=400"
     if (doc.heroImage?.url) {
-      imageUrl = doc.heroImage.url.startsWith('http')
-        ? doc.heroImage.url
-        : `${baseURL}${doc.heroImage.url}`
+      imageUrl = doc.heroImage.url.startsWith("http") ? doc.heroImage.url : `${baseURL}${doc.heroImage.url}`
     }
+
+    const categoryName =
+      doc.categories && doc.categories.length > 0
+        ? typeof doc.categories[0] === "object"
+          ? doc.categories[0].title
+          : doc.categories[0]
+        : "General"
+
+    let excerpt = doc.excerpt || doc.meta?.description || ""
+    if (!excerpt && doc.content) {
+      const plainText = extractTextFromLexical(doc.content)
+      excerpt = plainText.substring(0, 150) + (plainText.length > 150 ? "..." : "")
+    }
+
+    const authorName =
+      doc.populatedAuthors && doc.populatedAuthors.length > 0 ? doc.populatedAuthors[0].name : undefined
 
     return {
       slug: doc.slug,
       title: doc.title,
-      excerpt: doc.excerpt,
-      fullDate: new Date(doc.createdAt).toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
+      excerpt: excerpt,
+      fullDate: new Date(doc.createdAt).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
       }),
       date: {
-        day: new Date(doc.createdAt).getDate().toString().padStart(2, '0'),
-        month: new Date(doc.createdAt)
-          .toLocaleString('en-US', { month: 'short' })
-          .toUpperCase(),
+        day: new Date(doc.createdAt).getDate().toString().padStart(2, "0"),
+        month: new Date(doc.createdAt).toLocaleString("en-US", { month: "short" }).toUpperCase(),
       },
-      category: doc.category || 'General',
+      category: categoryName,
       image: imageUrl,
+      author: authorName,
+      content: doc.content,
     }
   })
 
@@ -71,9 +101,7 @@ export default async function LatestNews() {
     <section className="px-4 py-12 sm:px-6 sm:py-16 md:px-8 md:py-20 lg:px-24 lg:py-24 bg-muted/30">
       <div className="mx-auto max-w-7xl">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-            Latest news
-          </h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-2">Latest Articles</h2>
           <div className="w-16 h-1 bg-primary mx-auto mb-6"></div>
         </div>
 
@@ -89,7 +117,7 @@ export default async function LatestNews() {
                   <div className="md:w-2/5 relative">
                     <div className="relative h-48 md:h-full">
                       <Image
-                        src={item.image || '/placeholder.svg'}
+                        src={item.image || "/placeholder.svg?height=300&width=400&query=news article image"}
                         alt={item.title}
                         width={400}
                         height={300}
@@ -103,25 +131,30 @@ export default async function LatestNews() {
                   </div>
                   <CardContent className="md:w-3/5 p-6 flex flex-col justify-between">
                     <div>
-                      <Badge
-                        variant="secondary"
-                        className="mb-3 bg-secondary text-secondary-foreground"
-                      >
+                      <Badge variant="secondary" className="mb-3 bg-secondary text-secondary-foreground">
                         {item.category}
                       </Badge>
                       <h3 className="text-xl font-bold text-card-foreground mb-3 hover:text-primary transition-colors leading-tight">
                         <Link href={`/posts/${item.slug}`}>{item.title}</Link>
                       </h3>
-                      {item.excerpt && (
-                        <p className="text-muted-foreground mb-4 leading-relaxed">
-                          {item.excerpt}
-                        </p>
-                      )}
+                      {item.excerpt ? (
+                        <p className="text-muted-foreground mb-4 leading-relaxed line-clamp-3">{item.excerpt}</p>
+                      ) : item.content ? (
+                        <div className="text-muted-foreground mb-4 leading-relaxed line-clamp-3 prose prose-sm max-w-none">
+                          <RichText data={item.content} enableGutter={false} enableProse={false} />
+                        </div>
+                      ) : null}
                     </div>
                     <div className="flex items-center justify-between mt-auto">
                       <div className="flex items-center text-sm text-muted-foreground">
                         <Calendar className="w-4 h-4 mr-2" />
                         {item.fullDate}
+                        {item.author && (
+                          <>
+                            <span className="mx-2">•</span>
+                            <span>By {item.author}</span>
+                          </>
+                        )}
                       </div>
                       <Button
                         variant="ghost"
@@ -143,7 +176,7 @@ export default async function LatestNews() {
 
           {/* Sidebar */}
           <div className="xl:col-span-1 space-y-6">
-            <div className="sticky top-20">
+            <div className="sticky top-24">
               <h3 className="text-xl font-bold text-foreground mb-6">Recent Updates</h3>
               <div className="space-y-4">
                 {sidebarNews.map((item) => (
@@ -154,7 +187,7 @@ export default async function LatestNews() {
                     <div className="flex h-32">
                       <div className="w-32 relative flex-shrink-0">
                         <Image
-                          src={item.image || '/placeholder.svg'}
+                          src={item.image || "/placeholder.svg?height=120&width=120&query=news thumbnail"}
                           alt={item.title}
                           width={120}
                           height={80}
@@ -177,10 +210,7 @@ export default async function LatestNews() {
                 ))}
               </div>
 
-              <Button
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground mt-6"
-                asChild
-              >
+              <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground mt-6" asChild>
                 <Link href="/posts" className="flex items-center justify-center">
                   View All Posts
                   <ArrowRight className="ml-2 w-4 h-4" />

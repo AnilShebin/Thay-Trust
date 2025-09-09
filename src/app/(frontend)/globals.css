@@ -101,3 +101,7 @@ html[data-theme='dark'],
 html[data-theme='light'] {
   opacity: initial;
 }
+
+.prose img {
+  @apply rounded-xl w-full h-auto object-cover;
+}

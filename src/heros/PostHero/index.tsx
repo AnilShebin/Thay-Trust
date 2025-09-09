@@ -7,6 +7,7 @@ import type { Post } from '@/payload-types'
 import { Media } from '@/components/Media'
 import { formatAuthors } from '@/utilities/formatAuthors'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 
 export const PostHero: React.FC<{ post: Post }> = ({ post }) => {
   const { categories, heroImage, populatedAuthors, publishedAt, title } = post
@@ -36,26 +37,25 @@ export const PostHero: React.FC<{ post: Post }> = ({ post }) => {
       <div className="absolute left-1/2 top-1/2 mx-auto w-full max-w-screen-xl -translate-x-1/2 -translate-y-1/2 px-4 xl:px-0">
         {/* Categories */}
         {categories && categories.length > 0 && (
-          <span className="mb-4 block text-white text-sm uppercase">
-            Published in{' '}
+          <div className="mb-4 flex flex-wrap gap-2">
             {categories.map((category, index) => {
               if (typeof category === 'object' && category !== null) {
                 const { title: categoryTitle } = category
                 const titleToUse = categoryTitle || 'Untitled category'
-                const isLast = index === categories.length - 1
 
                 return (
-                  <React.Fragment key={index}>
-                    <Button variant="link" className="px-0 text-white">
-                      {titleToUse}
-                    </Button>
-                    {!isLast && <span>, &nbsp;</span>}
-                  </React.Fragment>
+                  <Badge
+                    key={index}
+                    variant="outline"
+                    className="group flex w-fit items-center gap-1.5 border-white/40 bg-transparent px-2.5 py-1.5 text-xs font-medium text-white hover:bg-white/10"
+                  >
+                    <span>{titleToUse}</span>
+                  </Badge>
                 )
               }
               return null
             })}
-          </span>
+          </div>
         )}
 
         {/* Title */}

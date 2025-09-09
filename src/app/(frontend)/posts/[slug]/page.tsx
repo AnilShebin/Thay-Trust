@@ -105,7 +105,7 @@ const queryPostBySlug = cache(async ({ slug }: { slug: string }) => {
 function Sidebar() {
   return (
     <aside className="hidden xl:block" aria-labelledby="sidebar-label">
-      <div className="sticky top-20 xl:w-[336px]">
+      <div className="sticky top-24 xl:w-[336px]">
         <Card>
           <CardHeader>
             <CardTitle className="text-sm font-bold uppercase">
