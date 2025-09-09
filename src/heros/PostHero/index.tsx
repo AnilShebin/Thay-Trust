@@ -1,73 +1,85 @@
-import { formatDateTime } from 'src/utilities/formatDateTime'
+'use client'
+
 import React from 'react'
+import { formatDateTime } from 'src/utilities/formatDateTime'
 
 import type { Post } from '@/payload-types'
-
 import { Media } from '@/components/Media'
 import { formatAuthors } from '@/utilities/formatAuthors'
+import { Button } from '@/components/ui/button'
 
-export const PostHero: React.FC<{
-  post: Post
-}> = ({ post }) => {
+export const PostHero: React.FC<{ post: Post }> = ({ post }) => {
   const { categories, heroImage, populatedAuthors, publishedAt, title } = post
 
   const hasAuthors =
     populatedAuthors && populatedAuthors.length > 0 && formatAuthors(populatedAuthors) !== ''
 
   return (
-    <div className="relative -mt-[10.4rem] flex items-end">
-      <div className="container z-10 relative lg:grid lg:grid-cols-[1fr_48rem_1fr] text-white pb-8">
-        <div className="col-start-1 col-span-1 md:col-start-2 md:col-span-2">
-          <div className="uppercase text-sm mb-6">
-            {categories?.map((category, index) => {
+    <header className="relative h-[540px] w-full bg-background xl:h-[620px]">
+      {/* Background Image */}
+      {heroImage && typeof heroImage !== 'string' ? (
+        <Media
+          resource={heroImage}
+          fill
+          priority
+          imgClassName="object-cover"
+          className="absolute inset-0"
+        />
+      ) : (
+        <div className="absolute inset-0 bg-muted" />
+      )}
+
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-white/100 via-black/30 to-transparent dark:from-black/100 dark:via-black/30 dark:to-transparent pointer-events-none" />
+
+      {/* Content */}
+      <div className="absolute left-1/2 top-1/2 mx-auto w-full max-w-screen-xl -translate-x-1/2 -translate-y-1/2 px-4 xl:px-0">
+        {/* Categories */}
+        {categories && categories.length > 0 && (
+          <span className="mb-4 block text-white text-sm uppercase">
+            Published in{' '}
+            {categories.map((category, index) => {
               if (typeof category === 'object' && category !== null) {
                 const { title: categoryTitle } = category
-
                 const titleToUse = categoryTitle || 'Untitled category'
-
                 const isLast = index === categories.length - 1
 
                 return (
                   <React.Fragment key={index}>
-                    {titleToUse}
-                    {!isLast && <React.Fragment>, &nbsp;</React.Fragment>}
+                    <Button variant="link" className="px-0 text-white">
+                      {titleToUse}
+                    </Button>
+                    {!isLast && <span>, &nbsp;</span>}
                   </React.Fragment>
                 )
               }
               return null
             })}
-          </div>
+          </span>
+        )}
 
-          <div className="">
-            <h1 className="mb-6 text-3xl md:text-5xl lg:text-6xl">{title}</h1>
-          </div>
+        {/* Title */}
+        <h1 className="mb-4 max-w-4xl text-2xl font-extrabold leading-none text-white sm:text-3xl lg:text-5xl">
+          {title}
+        </h1>
 
-          <div className="flex flex-col md:flex-row gap-4 md:gap-16">
-            {hasAuthors && (
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm">Author</p>
-
-                  <p>{formatAuthors(populatedAuthors)}</p>
-                </div>
-              </div>
-            )}
-            {publishedAt && (
-              <div className="flex flex-col gap-1">
-                <p className="text-sm">Date Published</p>
-
-                <time dateTime={publishedAt}>{formatDateTime(publishedAt)}</time>
-              </div>
-            )}
-          </div>
+        {/* Metadata */}
+        <div className="flex flex-col gap-2 text-gray-300 sm:flex-row sm:items-center sm:gap-6">
+          {hasAuthors && (
+            <p>
+              By{' '}
+              <Button variant="link" className="p-0 font-semibold text-white">
+                {formatAuthors(populatedAuthors)}
+              </Button>
+            </p>
+          )}
+          {publishedAt && (
+            <time dateTime={publishedAt} className="text-gray-300">
+              {formatDateTime(publishedAt)}
+            </time>
+          )}
         </div>
       </div>
-      <div className="min-h-[80vh] select-none">
-        {heroImage && typeof heroImage !== 'string' && (
-          <Media fill priority imgClassName="-z-10 object-cover" resource={heroImage} />
-        )}
-        <div className="absolute pointer-events-none left-0 bottom-0 w-full h-1/2 bg-gradient-to-t from-black to-transparent" />
-      </div>
-    </div>
+    </header>
   )
 }

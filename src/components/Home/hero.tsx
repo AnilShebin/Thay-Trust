@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { HandHelping, Users, WandSparkles, Zap } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Badge } from '../ui/badge'
 
 export default function Hero() {
@@ -36,15 +37,19 @@ export default function Hero() {
             </Link>
           </div>
         </div>
+
         <div className="relative mx-auto max-w-screen-lg">
-          <img
+          <Image
             src="https://images.unsplash.com/photo-1542810634-71277d95dcbb"
             alt="placeholder"
+            width={1920}
+            height={1080}
             className="aspect-video max-h-[500px] w-full rounded-xl object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent dark:from-background"></div>
           <BackgroundDecoration />
         </div>
+
         <div className="mx-auto mt-10 flex max-w-screen-lg flex-col md:flex-row">
           <FeatureCard
             icon={<HandHelping className="h-auto w-5" />}
