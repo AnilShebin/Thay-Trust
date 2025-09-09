@@ -8,24 +8,24 @@ const NEXT_PUBLIC_SERVER_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-images: {
+  images: {
     domains: [
-      "placehold.co",
-      "images.unsplash.com",
-      "localhost",
-      "127.0.0.1",
+      'placehold.co',
+      'images.unsplash.com',
+      'localhost',
+      '127.0.0.1',
+      'trust.anilshebin.in',
     ],
     dangerouslyAllowSVG: true,
-    contentSecurityPolicy:
-      "default-src 'self'; script-src 'none'; sandbox;",
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     remotePatterns: [
       ...[process.env.NEXT_PUBLIC_SERVER_URL].map((item) => {
-        const url = new URL(item);
+        const url = new URL(item)
 
         return {
           hostname: url.hostname,
-          protocol: url.protocol.replace(":", ""),
-        };
+          protocol: url.protocol.replace(':', ''),
+        }
       }),
     ],
   },

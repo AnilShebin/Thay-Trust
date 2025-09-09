@@ -31,24 +31,39 @@ export default async function LatestNews() {
     overrideAccess: false,
   })
 
-  const newsItems: NewsItem[] = posts.docs.map((doc: any) => ({
-    slug: doc.slug,
-    title: doc.title,
-    excerpt: doc.excerpt,
-    fullDate: new Date(doc.createdAt).toLocaleDateString('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-    }),
-    date: {
-      day: new Date(doc.createdAt).getDate().toString().padStart(2, '0'),
-      month: new Date(doc.createdAt)
-        .toLocaleString('en-US', { month: 'short' })
-        .toUpperCase(),
-    },
-    category: doc.category || 'General',
-    image: doc.featuredImage?.url || '/placeholder.svg',
-  }))
+  const baseURL =
+    process.env.NEXT_PUBLIC_SERVER_URL ||
+    process.env.__NEXT_PRIVATE_ORIGIN ||
+    'http://localhost:3000'
+
+  const newsItems: NewsItem[] = posts.docs.map((doc: any) => {
+    // Ensure heroImage is used and URL is absolute
+    let imageUrl = '/placeholder.svg'
+    if (doc.heroImage?.url) {
+      imageUrl = doc.heroImage.url.startsWith('http')
+        ? doc.heroImage.url
+        : `${baseURL}${doc.heroImage.url}`
+    }
+
+    return {
+      slug: doc.slug,
+      title: doc.title,
+      excerpt: doc.excerpt,
+      fullDate: new Date(doc.createdAt).toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      }),
+      date: {
+        day: new Date(doc.createdAt).getDate().toString().padStart(2, '0'),
+        month: new Date(doc.createdAt)
+          .toLocaleString('en-US', { month: 'short' })
+          .toUpperCase(),
+      },
+      category: doc.category || 'General',
+      image: imageUrl,
+    }
+  })
 
   const sidebarNews = newsItems.slice(0, 4)
 
@@ -56,11 +71,14 @@ export default async function LatestNews() {
     <section className="px-4 py-12 sm:px-6 sm:py-16 md:px-8 md:py-20 lg:px-24 lg:py-24 bg-muted/30">
       <div className="mx-auto max-w-7xl">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-2">Latest news</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
+            Latest news
+          </h2>
           <div className="w-16 h-1 bg-primary mx-auto mb-6"></div>
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 lg:gap-8">
+          {/* Main News Cards */}
           <div className="xl:col-span-3 space-y-6">
             {newsItems.map((item) => (
               <Card
@@ -95,7 +113,9 @@ export default async function LatestNews() {
                         <Link href={`/posts/${item.slug}`}>{item.title}</Link>
                       </h3>
                       {item.excerpt && (
-                        <p className="text-muted-foreground mb-4 leading-relaxed">{item.excerpt}</p>
+                        <p className="text-muted-foreground mb-4 leading-relaxed">
+                          {item.excerpt}
+                        </p>
                       )}
                     </div>
                     <div className="flex items-center justify-between mt-auto">
@@ -121,6 +141,7 @@ export default async function LatestNews() {
             ))}
           </div>
 
+          {/* Sidebar */}
           <div className="xl:col-span-1 space-y-6">
             <div className="sticky top-20">
               <h3 className="text-xl font-bold text-foreground mb-6">Recent Updates</h3>
