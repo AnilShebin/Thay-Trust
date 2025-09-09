@@ -1,72 +1,56 @@
-'use client'
-
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Calendar, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import configPromise from '@payload-config'
+import { getPayload } from 'payload'
+import React from 'react'
 
-export default function LatestNews() {
-  const newsItems = [
-    {
-      slug: 'thaytrust-newsletter-january-march-2025',
-      date: { day: '27', month: 'MAR' },
-      title: 'ThayTrust Newsletter – January to March 2025',
-      excerpt:
-        'Kickstarting 2025 with kindness and compassion, making a difference where it matters most. We celebrated...',
-      image: '/placeholder.svg',
-      fullDate: 'March 27, 2025',
-      category: 'Newsletter',
-    },
-    {
-      slug: 'world-cancer-day-2025',
-      date: { day: '04', month: 'FEB' },
-      title: 'World Cancer Day',
-      excerpt:
-        "WORLD CANCER DAY 2025, 4TH FEBRUARY 2025, ThayTrust's Nellai Cancer Hospital Tirunelveli Addressing the Rising...",
-      image: '/placeholder.svg',
-      fullDate: 'February 4, 2025',
-      category: 'Health Campaign',
-    },
-    {
-      slug: 'education-scholarship-program-2025',
-      date: { day: '15', month: 'JAN' },
-      title: 'New Education Scholarship Program Launch',
-      excerpt:
-        'Launching our expanded scholarship program to support 500 more students in their educational journey...',
-      image: '/placeholder.svg',
-      fullDate: 'January 15, 2025',
-      category: 'Education',
-    },
-  ]
+export const revalidate = 600 // ISR for 10 minutes
 
-  const sidebarNews = [
-    {
-      slug: 'thaytrust-newsletter-january-march-2025',
-      title: 'ThayTrust Newsletter – January to March 2025',
-      date: 'March 27, 2025',
-      image: '/placeholder.svg',
+type NewsItem = {
+  slug: string
+  title: string
+  excerpt?: string
+  fullDate: string
+  date: { day: string; month: string }
+  category?: string
+  image?: string
+}
+
+export default async function LatestNews() {
+  const payload = await getPayload({ config: configPromise })
+
+  const posts = await payload.find({
+    collection: 'posts',
+    depth: 1,
+    limit: 10,
+    sort: '-createdAt',
+    overrideAccess: false,
+  })
+
+  const newsItems: NewsItem[] = posts.docs.map((doc: any) => ({
+    slug: doc.slug,
+    title: doc.title,
+    excerpt: doc.excerpt,
+    fullDate: new Date(doc.createdAt).toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    }),
+    date: {
+      day: new Date(doc.createdAt).getDate().toString().padStart(2, '0'),
+      month: new Date(doc.createdAt)
+        .toLocaleString('en-US', { month: 'short' })
+        .toUpperCase(),
     },
-    {
-      slug: 'world-cancer-day-2025',
-      title: 'World Cancer Day',
-      date: 'February 4, 2025',
-      image: '/placeholder.svg',
-    },
-    {
-      slug: 'thaytrust-newsletter-november-2024',
-      title: 'ThayTrust Newsletter – November 2024',
-      date: 'November 21, 2024',
-      image: '/placeholder.svg',
-    },
-    {
-      slug: 'thaytrust-newsletter-august-2024',
-      title: 'ThayTrust Newsletter – August 2024',
-      date: 'September 5, 2024',
-      image: '/placeholder.svg',
-    },
-  ]
+    category: doc.category || 'General',
+    image: doc.featuredImage?.url || '/placeholder.svg',
+  }))
+
+  const sidebarNews = newsItems.slice(0, 4)
 
   return (
     <section className="px-4 py-12 sm:px-6 sm:py-16 md:px-8 md:py-20 lg:px-24 lg:py-24 bg-muted/30">
@@ -108,9 +92,11 @@ export default function LatestNews() {
                         {item.category}
                       </Badge>
                       <h3 className="text-xl font-bold text-card-foreground mb-3 hover:text-primary transition-colors leading-tight">
-                        <Link href={`/news/${item.slug}`}>{item.title}</Link>
+                        <Link href={`/posts/${item.slug}`}>{item.title}</Link>
                       </h3>
-                      <p className="text-muted-foreground mb-4 leading-relaxed">{item.excerpt}</p>
+                      {item.excerpt && (
+                        <p className="text-muted-foreground mb-4 leading-relaxed">{item.excerpt}</p>
+                      )}
                     </div>
                     <div className="flex items-center justify-between mt-auto">
                       <div className="flex items-center text-sm text-muted-foreground">
@@ -123,7 +109,7 @@ export default function LatestNews() {
                         className="text-primary hover:text-primary-foreground hover:bg-primary transition-colors"
                         asChild
                       >
-                        <Link href={`/news/${item.slug}`} className="flex items-center">
+                        <Link href={`/posts/${item.slug}`} className="flex items-center">
                           Read More
                           <ArrowRight className="ml-2 w-4 h-4" />
                         </Link>
@@ -139,9 +125,9 @@ export default function LatestNews() {
             <div className="sticky top-20">
               <h3 className="text-xl font-bold text-foreground mb-6">Recent Updates</h3>
               <div className="space-y-4">
-                {sidebarNews.map((item, index) => (
+                {sidebarNews.map((item) => (
                   <Card
-                    key={index}
+                    key={item.slug}
                     className="overflow-hidden hover:shadow-md transition-shadow duration-300 bg-card border-border p-0"
                   >
                     <div className="flex h-32">
@@ -157,12 +143,12 @@ export default function LatestNews() {
                       <CardContent className="flex-1 p-4 flex flex-col justify-between">
                         <div>
                           <h4 className="font-semibold text-foreground text-base mb-2 hover:text-primary transition-colors leading-tight line-clamp-2">
-                            <Link href={`/news/${item.slug}`}>{item.title}</Link>
+                            <Link href={`/posts/${item.slug}`}>{item.title}</Link>
                           </h4>
                         </div>
                         <div className="flex items-center text-sm text-muted-foreground mt-auto">
                           <Calendar className="w-4 h-4 mr-1" />
-                          {item.date}
+                          {item.fullDate}
                         </div>
                       </CardContent>
                     </div>
@@ -174,8 +160,8 @@ export default function LatestNews() {
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground mt-6"
                 asChild
               >
-                <Link href="/news" className="flex items-center justify-center">
-                  View All News
+                <Link href="/posts" className="flex items-center justify-center">
+                  View All Posts
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </Link>
               </Button>
