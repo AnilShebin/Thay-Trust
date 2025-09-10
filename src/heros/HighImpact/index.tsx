@@ -61,11 +61,11 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText 
                   asChild
                   variant={i === 0 ? 'default' : 'outline'}
                   size="lg"
-                  className={i !== 0 ? 'text-primary' : ''}
+                  className="rounded-full group"
                 >
                   <CMSLink
                     {...link}
-                    className={i !== 0 ? 'flex items-center gap-2 group' : undefined}
+                    className={`flex items-center gap-2 ${i !== 0 ? 'text-primary' : ''}`}
                   >
                     {i !== 0 && (
                       <ArrowRight className="ml-1 size-4 transition-transform group-hover:translate-x-1" />

@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { HandHelping, Users, WandSparkles, Zap } from 'lucide-react'
+import { ArrowRight, HandHelping, Users, WandSparkles, Zap } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Badge } from '../ui/badge'
@@ -31,8 +31,11 @@ export default function Hero() {
               </Button>
             </Link>
             <Link href="/about">
-              <Button size="lg" variant="outline" className="rounded-full">
-                Learn More
+              <Button size="lg" variant="outline" className="rounded-full group">
+                <span className="flex items-center gap-2">
+                  Learn More
+                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                </span>
               </Button>
             </Link>
           </div>
