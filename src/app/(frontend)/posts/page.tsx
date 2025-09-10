@@ -1,22 +1,20 @@
-import type { Metadata } from 'next/types'
+import type { Metadata } from "next/types"
+import { PageRange } from "@/components/PageRange"
+import { Pagination } from "@/components/Pagination"
+import PostGrid from "@/components/PostGrid"
+import configPromise from "@payload-config"
+import { getPayload } from "payload"
+import PageClient from "./page.client"
 
-import { CollectionArchive } from '@/components/CollectionArchive'
-import { PageRange } from '@/components/PageRange'
-import { Pagination } from '@/components/Pagination'
-import configPromise from '@payload-config'
-import { getPayload } from 'payload'
-import React from 'react'
-import PageClient from './page.client'
-
-export const dynamic = 'force-static'
+export const dynamic = "force-static"
 export const revalidate = 600
 
 export default async function Page() {
   const payload = await getPayload({ config: configPromise })
 
   const posts = await payload.find({
-    collection: 'posts',
-    depth: 1,
+    collection: "posts",
+    depth: 2,
     limit: 12,
     overrideAccess: false,
     select: {
@@ -24,40 +22,56 @@ export default async function Page() {
       slug: true,
       categories: true,
       meta: true,
+      heroImage: true,
+      populatedAuthors: true,
+      publishedAt: true,
+      createdAt: true,
+      updatedAt: true,
+      content: true,
     },
   })
 
   return (
-    <div className="pt-24 pb-24">
+    <div className="min-h-screen bg-background">
       <PageClient />
-      <div className="container mb-16">
-        <div className="prose dark:prose-invert max-w-none">
-          <h1>Posts</h1>
+
+      {/* Add spacing below fixed navbar */}
+      <section className="pt-24 pb-16"> 
+        <div className="container mx-auto max-w-7xl">
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Main content */}
+            <div className="flex-1">
+              <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <h2 className="text-2xl font-semibold text-foreground mb-2">All Posts</h2>
+                  <PageRange
+                    collection="posts"
+                    currentPage={posts.page}
+                    limit={12}
+                    totalDocs={posts.totalDocs}
+                  />
+                </div>
+              </div>
+
+              <PostGrid posts={posts.docs} />
+
+              {posts.totalPages > 1 && posts.page && (
+                <div className="mt-12 flex justify-center">
+                  <Pagination page={posts.page} totalPages={posts.totalPages} />
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div className="container mb-8">
-        <PageRange
-          collection="posts"
-          currentPage={posts.page}
-          limit={12}
-          totalDocs={posts.totalDocs}
-        />
-      </div>
-
-      <CollectionArchive posts={posts.docs} />
-
-      <div className="container">
-        {posts.totalPages > 1 && posts.page && (
-          <Pagination page={posts.page} totalPages={posts.totalPages} />
-        )}
-      </div>
+      </section>
     </div>
   )
 }
 
 export function generateMetadata(): Metadata {
   return {
-    title: `Payload Website Template Posts`,
+    title: `Latest Posts & Insights`,
+    description:
+      "Discover thought-provoking articles, industry insights, and expert perspectives on technology and innovation.",
   }
 }
