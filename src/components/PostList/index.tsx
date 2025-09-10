@@ -57,7 +57,7 @@ export default function PostList({
             "relative block",
             aspect === "landscape" ? "aspect-[16/10]" : aspect === "custom" ? "aspect-[4/3]" : "aspect-[16/10]",
           )}
-          href={`/post/${pathPrefix ? `${pathPrefix}/` : ""}${post.slug}`}
+          href={`/posts/${pathPrefix ? `${pathPrefix}/` : ""}${post.slug}`}
         >
           {imageProps?.url ? (
             <Image
@@ -100,7 +100,7 @@ export default function PostList({
               "mt-2 text-foreground",
             )}
           >
-            <Link href={`/post/${pathPrefix ? `${pathPrefix}/` : ""}${post.slug}`}>
+            <Link href={`/posts/${pathPrefix ? `${pathPrefix}/` : ""}${post.slug}`}>
               <span
                 className="bg-gradient-to-r from-accent to-secondary bg-[length:0px_10px] bg-left-bottom
                 bg-no-repeat
@@ -116,7 +116,7 @@ export default function PostList({
 
           <div className="hidden">
             <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">
-              <Link href={`/post/${pathPrefix ? `${pathPrefix}/` : ""}${post.slug}`}>{getExcerpt(post.content)}</Link>
+              <Link href={`/posts/${pathPrefix ? `${pathPrefix}/` : ""}${post.slug}`}>{getExcerpt(post.content)}</Link>
             </p>
           </div>
 
