@@ -108,7 +108,7 @@ export interface Config {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
   };
-  locale: null;
+  locale: 'en' | 'ta';
   user: User & {
     collection: 'users';
   };
@@ -496,6 +496,10 @@ export interface ContentBlock {
  */
 export interface MediaBlock {
   media: number | Media;
+  /**
+   * Optional caption for the media item
+   */
+  caption?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'mediaBlock';
@@ -1096,6 +1100,7 @@ export interface ContentBlockSelect<T extends boolean = true> {
  */
 export interface MediaBlockSelect<T extends boolean = true> {
   media?: T;
+  caption?: T;
   id?: T;
   blockName?: T;
 }

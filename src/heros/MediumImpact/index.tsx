@@ -20,7 +20,7 @@ export const MediumImpactHero: React.FC<Page['hero']> = ({ links, media, richTex
   })
 
   return (
-    <section className="relative w-full min-h-[90vh] overflow-hidden py-48">
+    <section className="relative w-full min-h-[95vh] overflow-hidden py-48">
       {media && typeof media === 'object' && (
         <Media
           resource={media}
@@ -53,9 +53,7 @@ export const MediumImpactHero: React.FC<Page['hero']> = ({ links, media, richTex
                 <span className="text-primary">optimize and enhance business processes</span> with
                 the world's most scalable AI platform.
               </h1>
-              <p className="text-xl text-white md:text-2xl">
-                AI + data, online. At any scale.
-              </p>
+              <p className="text-xl text-white md:text-2xl">AI + data, online. At any scale.</p>
             </>
           )}
 
@@ -84,14 +82,5 @@ export const MediumImpactHero: React.FC<Page['hero']> = ({ links, media, richTex
         </div>
       </div>
     </section>
-  )
-}
-
-function BackgroundDecoration() {
-  return (
-    <>
-      <div className="absolute -right-28 -top-28 -z-10 aspect-video h-72 w-96 opacity-40 [background-size:12px_12px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_20%,transparent_100%)] sm:bg-[radial-gradient(hsl(var(--muted-foreground))_1px,transparent_1px)]"></div>
-      <div className="absolute -left-28 -top-28 -z-10 aspect-video h-72 w-96 opacity-40 [background-size:12px_12px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_20%,transparent_100%)] sm:bg-[radial-gradient(hsl(var(--muted-foreground))_1px,transparent_1px)]"></div>
-    </>
   )
 }

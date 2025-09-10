@@ -62,6 +62,7 @@ export const Pages: CollectionConfig<'pages'> = {
       name: 'title',
       type: 'text',
       required: true,
+      localized: true,
     },
     {
       type: 'tabs',
@@ -77,6 +78,7 @@ export const Pages: CollectionConfig<'pages'> = {
               type: 'blocks',
               blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock],
               required: true,
+              localized: true,
               admin: {
                 initCollapsed: true,
               },
@@ -99,12 +101,10 @@ export const Pages: CollectionConfig<'pages'> = {
             MetaImageField({
               relationTo: 'media',
             }),
-
             MetaDescriptionField({}),
             PreviewField({
               // if the `generateUrl` function is configured
               hasGenerateFn: true,
-
               // field paths to match the target field for data
               titlePath: 'meta.title',
               descriptionPath: 'meta.description',

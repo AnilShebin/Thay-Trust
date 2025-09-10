@@ -3,7 +3,8 @@
 import { useHeaderTheme } from '@/providers/HeaderTheme'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import type React from 'react'
+import { useEffect, useState } from 'react'
 
 import type { Header } from '@/payload-types'
 
@@ -13,6 +14,7 @@ import { HandCoins, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { AdminBar } from '@/components/AdminBar'
+import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 
 interface HeaderClientProps {
   data: Header
@@ -45,15 +47,13 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, adminBarProps 
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'backdrop-blur-md bg-transparent shadow-sm'
-          : 'bg-transparent'
+        isScrolled ? 'backdrop-blur-md bg-muted/70 shadow-sm' : 'bg-transparent'
       }`}
     >
       {/* ✅ Admin bar always rendered at the top */}
       <AdminBar adminBarProps={adminBarProps} />
 
-      <nav className="flex h-16 items-center justify-between px-4 sm:px-6 md:px-12 lg:px-20 py-0">
+      <nav className="flex h-18 items-center justify-between px-4 sm:px-8 md:px-16 lg:px-24 py-1 sm:py-2">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2 group">
           <Logo loading="eager" priority="high" />
@@ -66,6 +66,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, adminBarProps 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-8">
           <HeaderNav data={data} />
+          <LanguageSwitcher variant="desktop" />
           <Button className="shadow-sm hover:shadow-md transition-all duration-300 bg-primary dark:text-foreground hover:bg-primary/90 text-primary-foreground rounded-xl">
             <Link href="/donate" className="flex items-center gap-2">
               <HandCoins className="w-4 h-4" />
@@ -111,11 +112,17 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, adminBarProps 
               {/* Mobile Links */}
               <div className="flex-1 py-6">
                 <HeaderNav data={data} />
+                <div className="mt-6 pt-6 border-t border-border/50">
+                  <LanguageSwitcher variant="mobile" />
+                </div>
               </div>
 
               {/* Mobile Footer */}
               <div className="p-6">
-                <Button asChild className="w-full text-lg py-6 bg-primary dark:text-foreground hover:bg-primary/90">
+                <Button
+                  asChild
+                  className="w-full text-lg py-6 bg-primary dark:text-foreground hover:bg-primary/90"
+                >
                   <Link href="/donate" onClick={() => setIsOpen(false)}>
                     Donate Now
                   </Link>

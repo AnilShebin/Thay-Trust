@@ -1,28 +1,23 @@
-import type { Metadata } from "next";
-import Image from "next/image";
+import type { Metadata } from "next"
+import Image from "next/image"
 
-import { PayloadRedirects } from "@/components/PayloadRedirects";
-import configPromise from "@payload-config";
-import { getPayload } from "payload";
-import { draftMode } from "next/headers";
-import React, { cache } from "react";
-import RichText from "@/components/RichText";
+import { PayloadRedirects } from "@/components/PayloadRedirects"
+import configPromise from "@payload-config"
+import { getPayload } from "payload"
+import { draftMode } from "next/headers"
+import { cache } from "react"
+import RichText from "@/components/RichText"
 
-import { PostHero } from "@/heros/PostHero";
-import { generateMeta } from "@/utilities/generateMeta";
-import PageClient from "./page.client";
-import { LivePreviewListener } from "@/components/LivePreviewListener";
+import { PostHero } from "@/heros/PostHero"
+import { generateMeta } from "@/utilities/generateMeta"
+import PageClient from "./page.client"
+import { LivePreviewListener } from "@/components/LivePreviewListener"
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise });
+  const payload = await getPayload({ config: configPromise })
   const posts = await payload.find({
     collection: "posts",
     draft: false,
@@ -30,24 +25,27 @@ export async function generateStaticParams() {
     overrideAccess: false,
     pagination: false,
     select: { slug: true },
-  });
+  })
 
-  return posts.docs.map(({ slug }) => ({ slug }));
+  return posts.docs.map(({ slug }) => ({ slug }))
 }
 
 // ----------------- Types -----------------
 type Args = {
-  params: Promise<{ slug?: string }>; // <-- params can be awaited
-};
+  params: Promise<{ slug?: string }> // <-- params can be awaited
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
 
 // ----------------- Page Component -----------------
-export default async function Post({ params }: Args) {
-  const { slug = "" } = await params; // <-- await params
-  const { isEnabled: draft } = await draftMode();
-  const url = `/posts/${slug}`;
+export default async function Post({ params, searchParams }: Args) {
+  const { slug = "" } = await params
+  const searchParamsResolved = await searchParams
+  const locale = (searchParamsResolved.locale as string) || "en"
+  const { isEnabled: draft } = await draftMode()
+  const url = `/posts/${slug}`
 
-  const post = await queryPostBySlug({ slug });
-  if (!post) return <PayloadRedirects url={url} />;
+  const post = await queryPostBySlug({ slug, locale })
+  if (!post) return <PayloadRedirects url={url} />
 
   return (
     <main className="bg-background text-foreground">
@@ -74,32 +72,36 @@ export default async function Post({ params }: Args) {
       {/* Related Articles */}
       <RelatedArticles />
     </main>
-  );
+  )
 }
 
 // ----------------- Metadata -----------------
-export async function generateMetadata({ params }: Args): Promise<Metadata> {
-  const { slug = "" } = await params; // <-- await params
-  const post = await queryPostBySlug({ slug });
-  return generateMeta({ doc: post });
+export async function generateMetadata({ params, searchParams }: Args): Promise<Metadata> {
+  const { slug = "" } = await params
+  const searchParamsResolved = await searchParams
+  const locale = (searchParamsResolved.locale as string) || "en"
+  const post = await queryPostBySlug({ slug, locale })
+  return generateMeta({ doc: post })
 }
 
 // ----------------- Helper -----------------
-const queryPostBySlug = cache(async ({ slug }: { slug: string }) => {
-  const { isEnabled: draft } = await draftMode();
-  const payload = await getPayload({ config: configPromise });
+const queryPostBySlug = cache(async ({ slug, locale = "en" }: { slug: string; locale?: string }) => {
+  const { isEnabled: draft } = await draftMode()
+  const payload = await getPayload({ config: configPromise })
 
   const result = await payload.find({
     collection: "posts",
+    locale: locale as 'en' | 'ta',
+    fallbackLocale: "en",
     draft,
     limit: 1,
     overrideAccess: draft,
     pagination: false,
     where: { slug: { equals: slug } },
-  });
+  })
 
-  return result.docs?.[0] || null;
-});
+  return result.docs?.[0] || null
+})
 
 // ---------------- Sidebar ----------------
 function Sidebar() {
@@ -108,9 +110,7 @@ function Sidebar() {
       <div className="sticky top-24 xl:w-[336px]">
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm font-bold uppercase">
-              QuantumLeap AI Daily Brief
-            </CardTitle>
+            <CardTitle className="text-sm font-bold uppercase">QuantumLeap AI Daily Brief</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="mb-4 text-sm text-muted-foreground">
@@ -121,9 +121,7 @@ function Sidebar() {
         </Card>
         <Card className="mt-6">
           <CardHeader>
-            <CardTitle className="text-sm font-bold uppercase">
-              Recent News
-            </CardTitle>
+            <CardTitle className="text-sm font-bold uppercase">Recent News</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
@@ -146,16 +144,14 @@ function Sidebar() {
               ].map((item, index) => (
                 <div key={index} className="flex items-center">
                   <Image
-                    src={item.image}
+                    src={item.image || "/placeholder.svg"}
                     alt={item.title}
                     width={96} // 24 * 4 (Tailwind h-24 w-24)
                     height={96}
                     className="mr-4 rounded-lg object-cover"
                   />
                   <div>
-                    <h5 className="mb-2 text-lg font-bold leading-tight">
-                      {item.title}
-                    </h5>
+                    <h5 className="mb-2 text-lg font-bold leading-tight">{item.title}</h5>
                     <Button variant="link" className="p-0 text-primary">
                       Read in {item.time}
                     </Button>
@@ -167,7 +163,7 @@ function Sidebar() {
         </Card>
       </div>
     </aside>
-  );
+  )
 }
 
 // ---------------- Related Articles ----------------
@@ -175,9 +171,7 @@ function RelatedArticles() {
   return (
     <section className="bg-background py-8 lg:py-24">
       <div className="mx-auto max-w-screen-xl px-4">
-        <h2 className="mb-6 text-2xl font-bold text-foreground lg:mb-8">
-          Related articles
-        </h2>
+        <h2 className="mb-6 text-2xl font-bold text-foreground lg:mb-8">Related articles</h2>
         <div className="grid gap-6 md:grid-cols-2 lg:gap-12">
           {[
             {
@@ -205,7 +199,7 @@ function RelatedArticles() {
               <CardContent className="p-0">
                 <div className="flex flex-col xl:flex-row">
                   <Image
-                    src={article.image}
+                    src={article.image || "/placeholder.svg"}
                     alt={article.title}
                     width={192} // 48 * 4 (Tailwind h-48 w-48)
                     height={192}
@@ -227,5 +221,5 @@ function RelatedArticles() {
         </div>
       </div>
     </section>
-  );
+  )
 }

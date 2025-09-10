@@ -1,22 +1,22 @@
-import type { Metadata } from 'next'
+import type { Metadata } from "next"
 
-import { PayloadRedirects } from '@/components/PayloadRedirects'
-import configPromise from '@payload-config'
-import { getPayload, type RequiredDataFromCollectionSlug } from 'payload'
-import { draftMode } from 'next/headers'
-import React, { cache } from 'react'
-import { homeStatic } from '@/endpoints/seed/home-static'
+import { PayloadRedirects } from "@/components/PayloadRedirects"
+import configPromise from "@payload-config"
+import { getPayload, type RequiredDataFromCollectionSlug } from "payload"
+import { draftMode } from "next/headers"
+import { cache } from "react"
+import { homeStatic } from "@/endpoints/seed/home-static"
 
-import { RenderBlocks } from '@/blocks/RenderBlocks'
-import { RenderHero } from '@/heros/RenderHero'
-import { generateMeta } from '@/utilities/generateMeta'
-import PageClient from './page.client'
-import { LivePreviewListener } from '@/components/LivePreviewListener'
+import { RenderBlocks } from "@/blocks/RenderBlocks"
+import { RenderHero } from "@/heros/RenderHero"
+import { generateMeta } from "@/utilities/generateMeta"
+import PageClient from "./page.client"
+import { LivePreviewListener } from "@/components/LivePreviewListener"
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
   const pages = await payload.find({
-    collection: 'pages',
+    collection: "pages",
     draft: false,
     limit: 1000,
     overrideAccess: false,
@@ -28,7 +28,7 @@ export async function generateStaticParams() {
 
   const params = pages.docs
     ?.filter((doc) => {
-      return doc.slug !== 'home'
+      return doc.slug !== "home"
     })
     .map(({ slug }) => {
       return { slug }
@@ -41,21 +41,25 @@ type Args = {
   params: Promise<{
     slug?: string
   }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
-export default async function Page({ params: paramsPromise }: Args) {
+export default async function Page({ params: paramsPromise, searchParams }: Args) {
   const { isEnabled: draft } = await draftMode()
-  const { slug = 'home' } = await paramsPromise
-  const url = '/' + slug
+  const { slug = "home" } = await paramsPromise
+  const searchParamsResolved = await searchParams
+  const locale = (searchParamsResolved.locale as string) || "en"
+  const url = "/" + slug
 
-  let page: RequiredDataFromCollectionSlug<'pages'> | null
+  let page: RequiredDataFromCollectionSlug<"pages"> | null
 
   page = await queryPageBySlug({
     slug,
+    locale,
   })
 
   // Remove this code once your website is seeded
-  if (!page && slug === 'home') {
+  if (!page && slug === "home") {
     page = homeStatic
   }
 
@@ -66,7 +70,7 @@ export default async function Page({ params: paramsPromise }: Args) {
   const { hero, layout } = page
 
   return (
-    <article className="pb-16">
+    <article className="pt-16 pb-24">
       <PageClient />
       {/* Allows redirects for valid pages too */}
       <PayloadRedirects disableNotFound url={url} />
@@ -79,22 +83,27 @@ export default async function Page({ params: paramsPromise }: Args) {
   )
 }
 
-export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
-  const { slug = 'home' } = await paramsPromise
+export async function generateMetadata({ params: paramsPromise, searchParams }: Args): Promise<Metadata> {
+  const { slug = "home" } = await paramsPromise
+  const searchParamsResolved = await searchParams
+  const locale = (searchParamsResolved.locale as string) || "en"
   const page = await queryPageBySlug({
     slug,
+    locale,
   })
 
   return generateMeta({ doc: page })
 }
 
-const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
+const queryPageBySlug = cache(async ({ slug, locale = "en" }: { slug: string; locale?: string }) => {
   const { isEnabled: draft } = await draftMode()
 
   const payload = await getPayload({ config: configPromise })
 
   const result = await payload.find({
-    collection: 'pages',
+    collection: "pages",
+    locale: locale as 'en' | 'ta',
+    fallbackLocale: "en",
     draft,
     limit: 1,
     pagination: false,

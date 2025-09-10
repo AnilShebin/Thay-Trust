@@ -36,6 +36,7 @@ const columnFields: Field[] = [
   {
     name: 'richText',
     type: 'richText',
+    localized: true,
     editor: lexicalEditor({
       features: ({ rootFeatures }) => {
         return [
@@ -59,6 +60,7 @@ const columnFields: Field[] = [
           return Boolean(siblingData?.enableLink)
         },
       },
+      localized: true,
     },
   }),
 ]

@@ -105,6 +105,15 @@ export default buildConfig({
     },
   }),
   collections: [Pages, Posts, Media, Categories, Users],
+  // ===== Localization Configuration =====
+  localization: {
+    locales: [
+      { label: 'English', code: 'en' },
+      { label: 'Tamil', code: 'ta' },
+    ],
+    defaultLocale: 'en', // default language
+    fallback: true, // fallback to default if translation is missing
+  },
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [

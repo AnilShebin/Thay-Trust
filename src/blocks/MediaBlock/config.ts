@@ -10,5 +10,13 @@ export const MediaBlock: Block = {
       relationTo: 'media',
       required: true,
     },
+    {
+      name: 'caption',
+      type: 'text',
+      localized: true,
+      admin: {
+        description: 'Optional caption for the media item',
+      },
+    },
   ],
 }
