@@ -46,14 +46,14 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, adminBarProps 
     <header
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
         isScrolled
-          ? 'backdrop-blur-md bg-muted/70 shadow-sm'
+          ? 'backdrop-blur-md bg-transparent shadow-sm'
           : 'bg-transparent'
       }`}
     >
       {/* ✅ Admin bar always rendered at the top */}
       <AdminBar adminBarProps={adminBarProps} />
 
-      <nav className="flex h-18 items-center justify-between px-4 sm:px-8 md:px-16 lg:px-24 py-1 sm:py-2">
+      <nav className="flex h-16 items-center justify-between px-4 sm:px-6 md:px-12 lg:px-20 py-0">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2 group">
           <Logo loading="eager" priority="high" />
