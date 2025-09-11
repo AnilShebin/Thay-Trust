@@ -1,7 +1,7 @@
-import Script from "next/script"
-import type React from "react"
+import Script from 'next/script'
+import React from 'react'
 
-import { defaultTheme, themeLocalStorageKey } from "../shared"
+import { defaultTheme, themeLocalStorageKey } from '../ThemeSelector/types'
 
 export const InitTheme: React.FC = () => {
   return (
@@ -9,39 +9,22 @@ export const InitTheme: React.FC = () => {
     <Script
       dangerouslySetInnerHTML={{
         __html: `
-  (function () {
-    function getImplicitPreference() {
-      var mediaQuery = '(prefers-color-scheme: dark)'
-      var mql = window.matchMedia(mediaQuery)
-      var hasImplicitPreference = typeof mql.matches === 'boolean'
+              (function () {
+                function themeIsValid(theme) {
+                  return theme === 'light' || theme === 'dark'
+                }
 
-      if (hasImplicitPreference) {
-        return mql.matches ? 'dark' : 'light'
-      }
+                var themeToSet = '${defaultTheme}' // fallback is always light
+                var preference = window.localStorage.getItem('${themeLocalStorageKey}')
 
-      return null
-    }
+                if (themeIsValid(preference)) {
+                  themeToSet = preference
+                }
 
-    function themeIsValid(theme) {
-      return theme === 'light' || theme === 'dark'
-    }
-
-    var themeToSet = '${defaultTheme}'
-    var preference = window.localStorage.getItem('${themeLocalStorageKey}')
-
-    if (themeIsValid(preference)) {
-      themeToSet = preference
-    } else {
-      var implicitPreference = getImplicitPreference()
-
-      if (implicitPreference) {
-        themeToSet = implicitPreference
-      }
-    }
-
-    document.documentElement.setAttribute('data-theme', themeToSet)
-  })();
-  `,
+                document.documentElement.setAttribute('data-theme', themeToSet)
+                window.localStorage.setItem('${themeLocalStorageKey}', themeToSet) // ensure persistence
+              })();
+              `,
       }}
       id="theme-script"
       strategy="beforeInteractive"
