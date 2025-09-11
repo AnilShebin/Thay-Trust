@@ -1,11 +1,10 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
-import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Globe, ChevronDown } from "lucide-react"
+import { useLocale } from "@/contexts/LocaleContext"
 
 interface LanguageSwitcherProps {
   className?: string
@@ -13,24 +12,30 @@ interface LanguageSwitcherProps {
 }
 
 export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ className = "", variant = "desktop" }) => {
-  const router = useRouter()
-  const pathname = usePathname()
-  const [currentLocale, setCurrentLocale] = useState("en")
+  const { locale: currentLocale, setLocale, isLoading } = useLocale()
 
   const languages = [
-    { code: "en", label: "English", flag: "🇺🇸" },
-    { code: "ta", label: "தமிழ்", flag: "🇮🇳" },
+    { code: "en" as const, label: "English", flag: "🇺🇸" },
+    { code: "ta" as const, label: "தமிழ்", flag: "🇮🇳" },
   ]
 
-  const handleLanguageChange = (locale: string) => {
-    setCurrentLocale(locale)
-    // For now, we'll use URL parameters since full i18n routing isn't set up
-    const url = new URL(window.location.href)
-    url.searchParams.set("locale", locale)
-    router.push(url.pathname + url.search)
+  const handleLanguageChange = (locale: "en" | "ta") => {
+    console.log("[v0] LanguageSwitcher: Changing language to:", locale)
+    setLocale(locale)
   }
 
   const currentLanguage = languages.find((lang) => lang.code === currentLocale) || languages[0]
+
+  console.log("[v0] LanguageSwitcher: Current locale:", currentLocale, "isLoading:", isLoading)
+
+  if (isLoading) {
+    return (
+      <div className={`flex items-center gap-2 ${className}`}>
+        <Globe className="w-4 h-4 animate-pulse" />
+        <span className="hidden sm:inline">Loading...</span>
+      </div>
+    )
+  }
 
   if (variant === "mobile") {
     return (

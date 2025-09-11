@@ -16,6 +16,7 @@ import { LivePreviewListener } from "@/components/LivePreviewListener"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
+// ----------------- Static Params -----------------
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
   const posts = await payload.find({
@@ -32,17 +33,17 @@ export async function generateStaticParams() {
 
 // ----------------- Types -----------------
 type Args = {
-  params: Promise<{ slug?: string }> // <-- params can be awaited
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+  params: { slug?: string }
+  searchParams?: { [key: string]: string | string[] | undefined }
 }
 
 // ----------------- Page Component -----------------
 export default async function Post({ params, searchParams }: Args) {
-  const { slug = "" } = await params
-  const searchParamsResolved = await searchParams
-  const locale = (searchParamsResolved.locale as string) || "en"
+  const slug = params?.slug || ""
+  const locale = (searchParams?.locale as "en" | "ta") || "en"
+
   const { isEnabled: draft } = await draftMode()
-  const url = `/posts/${slug}`
+  const url = `/posts/${slug}?locale=${locale}`
 
   const post = await queryPostBySlug({ slug, locale })
   if (!post) return <PayloadRedirects url={url} />
@@ -66,78 +67,99 @@ export default async function Post({ params, searchParams }: Args) {
           </CardContent>
         </Card>
 
-        <Sidebar />
+        <Sidebar locale={locale} />
       </div>
 
       {/* Related Articles */}
-      <RelatedArticles />
+      <RelatedArticles locale={locale} />
     </main>
   )
 }
 
 // ----------------- Metadata -----------------
 export async function generateMetadata({ params, searchParams }: Args): Promise<Metadata> {
-  const { slug = "" } = await params
-  const searchParamsResolved = await searchParams
-  const locale = (searchParamsResolved.locale as string) || "en"
+  const slug = params?.slug || ""
+  const locale = (searchParams?.locale as "en" | "ta") || "en"
   const post = await queryPostBySlug({ slug, locale })
   return generateMeta({ doc: post })
 }
 
 // ----------------- Helper -----------------
-const queryPostBySlug = cache(async ({ slug, locale = "en" }: { slug: string; locale?: string }) => {
-  const { isEnabled: draft } = await draftMode()
-  const payload = await getPayload({ config: configPromise })
+const queryPostBySlug = cache(
+  async ({ slug, locale = "en" }: { slug: string; locale?: "en" | "ta" }) => {
+    const { isEnabled: draft } = await draftMode()
+    const payload = await getPayload({ config: configPromise })
 
-  const result = await payload.find({
-    collection: "posts",
-    locale: locale as 'en' | 'ta',
-    fallbackLocale: "en",
-    draft,
-    limit: 1,
-    overrideAccess: draft,
-    pagination: false,
-    where: { slug: { equals: slug } },
-  })
+    const result = await payload.find({
+      collection: "posts",
+      locale,
+      fallbackLocale: "en",
+      draft,
+      limit: 1,
+      overrideAccess: draft,
+      pagination: false,
+      where: { slug: { equals: slug } },
+    })
 
-  return result.docs?.[0] || null
-})
+    return result.docs?.[0] || null
+  }
+)
 
 // ---------------- Sidebar ----------------
-function Sidebar() {
+function Sidebar({ locale }: { locale: "en" | "ta" }) {
   return (
     <aside className="hidden xl:block" aria-labelledby="sidebar-label">
       <div className="sticky top-24 xl:w-[336px]">
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm font-bold uppercase">QuantumLeap AI Daily Brief</CardTitle>
+            <CardTitle className="text-sm font-bold uppercase">
+              {locale === "ta"
+                ? "குவாண்டம் லீப் AI தினசரி அறிக்கை"
+                : "QuantumLeap AI Daily Brief"}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="mb-4 text-sm text-muted-foreground">
-              Stay updated with the latest AI breakthroughs and insights.
+              {locale === "ta"
+                ? "சமீபத்திய AI முன்னேற்றங்களும் பார்வைகளும் பற்றிய தகவல்களைப் பெறுங்கள்."
+                : "Stay updated with the latest AI breakthroughs and insights."}
             </p>
-            <Button className="w-full">Subscribe</Button>
+            <Button className="w-full">
+              {locale === "ta" ? "சந்தா" : "Subscribe"}
+            </Button>
           </CardContent>
         </Card>
+
         <Card className="mt-6">
           <CardHeader>
-            <CardTitle className="text-sm font-bold uppercase">Recent News</CardTitle>
+            <CardTitle className="text-sm font-bold uppercase">
+              {locale === "ta" ? "சமீபத்திய செய்திகள்" : "Recent News"}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
               {[
                 {
-                  title: "New Breakthrough in Neural Networks",
+                  title:
+                    locale === "ta"
+                      ? "நியூரல் நெட்வொர்க்குகளில் புதிய முன்னேற்றம்"
+                      : "New Breakthrough in Neural Networks",
                   image: "https://placehold.co/900x600",
                   time: "15 minutes",
                 },
                 {
-                  title: "AI Ethics Initiative Launched",
+                  title:
+                    locale === "ta"
+                      ? "AI ஒழுக்க முன்முயற்சி தொடங்கப்பட்டது"
+                      : "AI Ethics Initiative Launched",
                   image: "https://placehold.co/900x600",
                   time: "20 minutes",
                 },
                 {
-                  title: "Quantum AI Research Update",
+                  title:
+                    locale === "ta"
+                      ? "குவாண்டம் AI ஆராய்ச்சி புதுப்பிப்பு"
+                      : "Quantum AI Research Update",
                   image: "https://placehold.co/900x600",
                   time: "10 minutes",
                 },
@@ -146,14 +168,18 @@ function Sidebar() {
                   <Image
                     src={item.image || "/placeholder.svg"}
                     alt={item.title}
-                    width={96} // 24 * 4 (Tailwind h-24 w-24)
+                    width={96}
                     height={96}
                     className="mr-4 rounded-lg object-cover"
                   />
                   <div>
-                    <h5 className="mb-2 text-lg font-bold leading-tight">{item.title}</h5>
-                    <Button variant="link" className="p-0 text-primary">
-                      Read in {item.time}
+                    <h5 className="mb-2 text-lg font-bold leading-tight">
+                      {item.title}
+                    </h5>
+                    <Button variant="link" className="p-0 text-primary" asChild>
+                      <a href={`/posts/sample-slug?locale=${locale}`}>
+                        {locale === "ta" ? "படிக்க" : "Read in"} {item.time}
+                      </a>
                     </Button>
                   </div>
                 </div>
@@ -167,51 +193,71 @@ function Sidebar() {
 }
 
 // ---------------- Related Articles ----------------
-function RelatedArticles() {
+function RelatedArticles({ locale }: { locale: "en" | "ta" }) {
+  const articles = [
+    {
+      title:
+        locale === "ta"
+          ? "காலநிலை மாற்றத்தைக் குறைக்கும் AI இன் பங்கு"
+          : "AI's Role in Climate Change Mitigation",
+      image: "https://placehold.co/900x600",
+      time: "18 minutes",
+    },
+    {
+      title:
+        locale === "ta"
+          ? "சுகாதாரத்தில் AI இன் எதிர்காலம்"
+          : "The Future of AI in Healthcare",
+      image: "https://placehold.co/900x600",
+      time: "25 minutes",
+    },
+    {
+      title:
+        locale === "ta"
+          ? "நிதியில் AI மாற்றம்"
+          : "How AI is Transforming Finance",
+      image: "https://placehold.co/900x600",
+      time: "14 minutes",
+    },
+    {
+      title:
+        locale === "ta"
+          ? "பொறுப்பான AI அபிவிருத்தி"
+          : "Responsible AI Development",
+      image: "https://placehold.co/900x600",
+      time: "17 minutes",
+    },
+  ]
+
   return (
     <section className="bg-background py-8 lg:py-24">
       <div className="mx-auto max-w-screen-xl px-4">
-        <h2 className="mb-6 text-2xl font-bold text-foreground lg:mb-8">Related articles</h2>
+        <h2 className="mb-6 text-2xl font-bold text-foreground lg:mb-8">
+          {locale === "ta" ? "தொடர்புடைய கட்டுரைகள்" : "Related articles"}
+        </h2>
         <div className="grid gap-6 md:grid-cols-2 lg:gap-12">
-          {[
-            {
-              title: "AI's Role in Climate Change Mitigation",
-              image: "https://placehold.co/900x600",
-              time: "18 minutes",
-            },
-            {
-              title: "The Future of AI in Healthcare",
-              image: "https://placehold.co/900x600",
-              time: "25 minutes",
-            },
-            {
-              title: "How AI is Transforming Finance",
-              image: "https://placehold.co/900x600",
-              time: "14 minutes",
-            },
-            {
-              title: "Responsible AI Development",
-              image: "https://placehold.co/900x600",
-              time: "17 minutes",
-            },
-          ].map((article, index) => (
+          {articles.map((article, index) => (
             <Card key={index}>
               <CardContent className="p-0">
                 <div className="flex flex-col xl:flex-row">
                   <Image
                     src={article.image || "/placeholder.svg"}
                     alt={article.title}
-                    width={192} // 48 * 4 (Tailwind h-48 w-48)
+                    width={192}
                     height={192}
                     className="h-48 w-full rounded-t-lg object-cover xl:w-48 xl:rounded-l-lg xl:rounded-tr-none"
                   />
                   <div className="p-4">
                     <h3 className="mb-2 text-xl font-bold">{article.title}</h3>
                     <p className="mb-4 text-muted-foreground">
-                      Explore insights on how AI impacts industries and life.
+                      {locale === "ta"
+                        ? "AI தொழில்நுட்பத்தின் தாக்கத்தைப் பற்றி மேலும் அறிக."
+                        : "Explore insights on how AI impacts industries and life."}
                     </p>
-                    <Button variant="link" className="p-0">
-                      Read in {article.time}
+                    <Button variant="link" className="p-0" asChild>
+                      <a href={`/posts/sample-slug?locale=${locale}`}>
+                        {locale === "ta" ? "படிக்க" : "Read in"} {article.time}
+                      </a>
                     </Button>
                   </div>
                 </div>

@@ -10,18 +10,17 @@ export const dynamic = "force-static"
 export const revalidate = 600
 
 type PageProps = {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+  searchParams: { [key: string]: string | string[] | undefined }
 }
 
 export default async function Page({ searchParams }: PageProps) {
-  const params = await searchParams
-  const locale = (params.locale as string) || "en"
+  const locale = (searchParams.locale as string) || "en"
 
   const payload = await getPayload({ config: configPromise })
 
   const posts = await payload.find({
     collection: "posts",
-    locale: locale as 'en' | 'ta',
+    locale: locale as "en" | "ta",
     fallbackLocale: "en",
     depth: 2,
     limit: 12,
@@ -42,9 +41,9 @@ export default async function Page({ searchParams }: PageProps) {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Pass locale if PageClient needs it */}
       <PageClient />
 
-      {/* Add spacing below fixed navbar */}
       <section className="pt-24 pb-16">
         <div className="container">
           <div className="flex flex-col lg:flex-row gap-8">
@@ -52,8 +51,15 @@ export default async function Page({ searchParams }: PageProps) {
             <div className="flex-1">
               <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                  <h2 className="text-2xl font-semibold text-foreground mb-2">All Posts</h2>
-                  <PageRange collection="posts" currentPage={posts.page} limit={12} totalDocs={posts.totalDocs} />
+                  <h2 className="text-2xl font-semibold text-foreground mb-2">
+                    {locale === "ta" ? "அனைத்து பதிவுகள்" : "All Posts"}
+                  </h2>
+                  <PageRange
+                    collection="posts"
+                    currentPage={posts.page}
+                    limit={12}
+                    totalDocs={posts.totalDocs}
+                  />
                 </div>
               </div>
 
@@ -70,22 +76,31 @@ export default async function Page({ searchParams }: PageProps) {
             <aside className="lg:w-80">
               <div className="sticky top-24 space-y-6">
                 <div className="bg-card border border-border rounded-lg p-6">
-                  <h3 className="font-semibold text-foreground mb-4">About Our Blog</h3>
+                  <h3 className="font-semibold text-foreground mb-4">
+                    {locale === "ta" ? "எங்கள் வலைப்பதிவைப் பற்றி" : "About Our Blog"}
+                  </h3>
                   <p className="text-muted-foreground text-sm leading-relaxed">
-                    Stay updated with the latest trends, insights, and innovations. Our expert authors share valuable
-                    knowledge to help you stay ahead in the rapidly evolving digital landscape.
+                    {locale === "ta"
+                      ? "புதிய போக்குகள், பார்வைகள் மற்றும் புதுமைகளை பற்றி புதுப்பித்துக் கொள்ளுங்கள். எங்கள் நிபுணர் ஆசிரியர்கள் உங்களை முன்னேற்றுவதற்கான மதிப்புமிக்க அறிவை பகிர்கிறார்கள்."
+                      : "Stay updated with the latest trends, insights, and innovations. Our expert authors share valuable knowledge to help you stay ahead in the rapidly evolving digital landscape."}
                   </p>
                 </div>
 
                 <div className="bg-card border border-border rounded-lg p-6">
-                  <h3 className="font-semibold text-foreground mb-4">Quick Stats</h3>
+                  <h3 className="font-semibold text-foreground mb-4">
+                    {locale === "ta" ? "விரைவான புள்ளிவிவரங்கள்" : "Quick Stats"}
+                  </h3>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground text-sm">Total Articles</span>
+                      <span className="text-muted-foreground text-sm">
+                        {locale === "ta" ? "மொத்த கட்டுரைகள்" : "Total Articles"}
+                      </span>
                       <span className="font-medium text-foreground">{posts.totalDocs}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground text-sm">Pages</span>
+                      <span className="text-muted-foreground text-sm">
+                        {locale === "ta" ? "பக்கங்கள்" : "Pages"}
+                      </span>
                       <span className="font-medium text-foreground">{posts.totalPages}</span>
                     </div>
                   </div>

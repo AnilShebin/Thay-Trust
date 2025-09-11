@@ -2,34 +2,40 @@ import { getCachedGlobal } from '@/utilities/getGlobals'
 import Link from 'next/link'
 import React from 'react'
 
-import type { Footer } from '@/payload-types'
+import type { Footer, Header } from '@/payload-types'
 
 import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
-import { CMSLink } from '@/components/Link'
 import { Logo } from '@/components/Logo/Logo'
-
+import { HeaderNav } from '@/Header/Nav'
 import { Facebook, Instagram, Twitter } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
 export async function Footer() {
   const footerData: Footer = await getCachedGlobal('footer', 1)()
-  const navItems = footerData?.navItems || []
+  const headerData: Header = await getCachedGlobal('header', 1)()
 
+  return <FooterClient footerData={footerData} headerData={headerData} />
+}
+
+interface FooterClientProps {
+  footerData: Footer
+  headerData: Header
+}
+
+const FooterClient: React.FC<FooterClientProps> = ({ footerData, headerData }) => {
   return (
-    <footer className="w-full border-t border-borde dark:bg-card">
+    <footer className="w-full border-t border-border dark:bg-card">
       <div className="mx-auto px-4 sm:px-8 md:px-16 lg:px-24 py-8">
-        {/* Main layout */}
         <div className="grid grid-cols-1 gap-10 text-center lg:grid-cols-12 lg:text-left">
           {/* Left column */}
           <div className="flex flex-col items-center space-y-6 lg:col-span-5 lg:items-start">
             <div className="flex items-center justify-center lg:justify-start">
-              {/* Logo */}
               <Link href="/" className="flex items-center space-x-2 group">
                 <Logo loading="eager" priority="high" />
                 <div className="flex flex-col justify-center">
-                  <span className={`text-xl font-bold italic leading-none`}>Thay</span>
-                  <span className={`text-xl font-bold italic leading-none`}>Trust</span>
+                  <span className="text-xl font-bold italic leading-none">Thay</span>
+                  <span className="text-xl font-bold italic leading-none">Trust</span>
                 </div>
               </Link>
             </div>
@@ -38,61 +44,48 @@ export async function Footer() {
               you&apos;ll crave.
             </p>
             <div className="mt-2 flex justify-center space-x-4 lg:justify-start">
-              <Link
-                href="#"
-                className="flex size-9 items-center justify-center rounded-full 
-               bg-primary/5 text-primary transition-all 
-               hover:bg-primary/10 hover:text-primary/80 
-               dark:bg-secondary dark:text-primary 
-               dark:hover:bg-secondary/80 dark:hover:text-primary/80"
-              >
-                <Facebook className="size-4" />
-                <span className="sr-only">Facebook</span>
-              </Link>
-              <Link
-                href="#"
-                className="flex size-9 items-center justify-center rounded-full 
-               bg-primary/5 text-primary transition-all 
-               hover:bg-primary/10 hover:text-primary/80 
-               dark:bg-secondary dark:text-primary 
-               dark:hover:bg-secondary/80 dark:hover:text-primary/80"
-              >
-                <Instagram className="size-4" />
-                <span className="sr-only">Instagram</span>
-              </Link>
-              <Link
-                href="#"
-                className="flex size-9 items-center justify-center rounded-full 
-               bg-primary/5 text-primary transition-all 
-               hover:bg-primary/10 hover:text-primary/80 
-               dark:bg-secondary dark:text-primary 
-               dark:hover:bg-secondary/80 dark:hover:text-primary/80"
-              >
-                <Twitter className="size-4" />
-                <span className="sr-only">Twitter</span>
-              </Link>
+              <SocialLink icon={Facebook} label="Facebook" />
+              <SocialLink icon={Instagram} label="Instagram" />
+              <SocialLink icon={Twitter} label="Twitter" />
             </div>
           </div>
 
           {/* Right column */}
           <div className="lg:col-span-7">
             <div className="grid grid-cols-1 gap-8 text-center md:grid-cols-3 md:text-left">
-              {/* Dynamic nav links */}
-              <div className="flex flex-col items-center md:items-start space-y-2">
-                <h3 className="text-base font-semibold text-primary">Quick Links</h3>
-                <nav className="flex flex-col gap-2 text-sm">
-                  {navItems.map(({ link }, i) => (
-                    <CMSLink
-                      key={i}
-                      {...link}
-                      className="text-muted-foreground hover:text-primary transition-colors"
-                    />
-                  ))}
-                </nav>
+              {/* Quick Links + Theme Switcher row for mobile */}
+              <div className="flex flex-row justify-center items-start space-x-6 md:hidden w-full">
+                {/* Quick Links */}
+                <div className="flex flex-col items-center space-y-2 w-1/2">
+                  <h3 className="text-base font-semibold text-primary text-center">Quick Links</h3>
+                  <HeaderNav
+                    data={headerData}
+                    vertical
+                    hideSearch
+                    className="flex flex-col space-y-2 w-full items-center"
+                  />
+                </div>
+
+                {/* Theme Switcher */}
+                <div className="flex flex-col items-center space-y-2 w-1/2 relative z-10">
+                  <h3 className="text-base font-semibold text-primary text-center">Theme</h3>
+                  <ThemeSelector />
+                </div>
               </div>
 
-              {/* Theme Switcher */}
-              <div className="flex flex-col items-center md:items-start space-y-2 relative z-10">
+              {/* Quick Links for desktop */}
+              <div className="hidden md:flex flex-col items-start space-y-2 w-full">
+                <h3 className="text-base font-semibold text-primary">Quick Links</h3>
+                <HeaderNav
+                  data={headerData}
+                  vertical
+                  hideSearch
+                  className="flex flex-col space-y-2 w-full md:items-start items-center"
+                />
+              </div>
+
+              {/* Theme Switcher for desktop */}
+              <div className="hidden md:flex flex-col items-start space-y-2 relative z-10">
                 <h3 className="text-base font-semibold text-primary">Theme</h3>
                 <ThemeSelector />
               </div>
@@ -159,3 +152,13 @@ export async function Footer() {
     </footer>
   )
 }
+
+const SocialLink = ({ icon: Icon, label }: { icon: any; label: string }) => (
+  <Link
+    href="#"
+    className="flex size-9 items-center justify-center rounded-full bg-primary/5 text-primary transition-all hover:bg-primary/10 hover:text-primary/80 dark:bg-secondary dark:text-primary dark:hover:bg-secondary/80 dark:hover:text-primary/80"
+  >
+    <Icon className="size-4" />
+    <span className="sr-only">{label}</span>
+  </Link>
+)

@@ -1,21 +1,21 @@
-import type { Metadata } from 'next'
+import type { Metadata } from "next"
 
-import { cn } from '@/utilities/ui'
-import { GeistMono } from 'geist/font/mono'
-import { GeistSans } from 'geist/font/sans'
-import React from 'react'
+import { cn } from "@/utilities/ui"
+import { GeistMono } from "geist/font/mono"
+import { GeistSans } from "geist/font/sans"
+import type React from "react"
 
-import { Footer } from '@/Footer/Component'
-import { Header } from '@/Header/Component'
-import { Providers } from '@/providers'
-import { InitTheme } from '@/providers/Theme/InitTheme'
-import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
+import { Footer } from "@/Footer/Component"
+import { Header } from "@/Header/Component"
+import { Providers } from "@/providers"
+import { InitTheme } from "@/providers/Theme/InitTheme"
+import { mergeOpenGraph } from "@/utilities/mergeOpenGraph"
+import { LocaleProvider } from "@/contexts/LocaleContext"
 
-import './globals.css'
-import { getServerSideURL } from '@/utilities/getURL'
+import "./globals.css"
+import { getServerSideURL } from "@/utilities/getURL"
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-
   return (
     <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
       <head>
@@ -25,9 +25,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body>
         <Providers>
-          <Header />
-          {children}
-          <Footer />
+          <LocaleProvider>
+            <Header />
+            {children}
+            <Footer />
+          </LocaleProvider>
         </Providers>
       </body>
     </html>
@@ -38,7 +40,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(getServerSideURL()),
   openGraph: mergeOpenGraph(),
   twitter: {
-    card: 'summary_large_image',
-    creator: '@payloadcms',
+    card: "summary_large_image",
+    creator: "@payloadcms",
   },
 }

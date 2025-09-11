@@ -23,6 +23,10 @@ type NewsItem = {
   content?: DefaultTypedEditorState
 }
 
+interface LatestNewsProps {
+  locale?: "en" | "ta"
+}
+
 function extractTextFromLexical(content: DefaultTypedEditorState): string {
   if (!content?.root?.children) return ""
 
@@ -40,11 +44,13 @@ function extractTextFromLexical(content: DefaultTypedEditorState): string {
   return text.trim()
 }
 
-export default async function LatestNews() {
+export default async function LatestNews({ locale = "en" }: LatestNewsProps) {
   const payload = await getPayload({ config: configPromise })
 
   const posts = await payload.find({
     collection: "posts",
+    locale: locale,
+    fallbackLocale: "en",
     depth: 2,
     limit: 10,
     sort: "-createdAt",
@@ -75,18 +81,20 @@ export default async function LatestNews() {
     const authorName =
       doc.populatedAuthors && doc.populatedAuthors.length > 0 ? doc.populatedAuthors[0].name : undefined
 
+    const dateLocale = locale === "ta" ? "ta-IN" : "en-US"
+
     return {
       slug: doc.slug,
       title: doc.title,
       excerpt: excerpt,
-      fullDate: new Date(doc.createdAt).toLocaleDateString("en-US", {
+      fullDate: new Date(doc.createdAt).toLocaleDateString(dateLocale, {
         month: "short",
         day: "numeric",
         year: "numeric",
       }),
       date: {
         day: new Date(doc.createdAt).getDate().toString().padStart(2, "0"),
-        month: new Date(doc.createdAt).toLocaleString("en-US", { month: "short" }).toUpperCase(),
+        month: new Date(doc.createdAt).toLocaleString(dateLocale, { month: "short" }).toUpperCase(),
       },
       category: categoryName,
       image: imageUrl,
@@ -101,7 +109,9 @@ export default async function LatestNews() {
     <section className="px-4 py-12 sm:px-6 sm:py-16 md:px-8 md:py-20 lg:px-24 lg:py-24 bg-muted/30">
       <div className="mx-auto max-w-7xl">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-2">Latest Articles</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
+            {locale === "ta" ? "சமீபத்திய கட்டுரைகள்" : "Latest Articles"}
+          </h2>
           <div className="w-16 h-1 bg-primary mx-auto mb-6"></div>
         </div>
 
@@ -135,7 +145,7 @@ export default async function LatestNews() {
                         {item.category}
                       </Badge>
                       <h3 className="text-xl font-bold text-card-foreground mb-3 hover:text-primary transition-colors leading-tight">
-                        <Link href={`/posts/${item.slug}`}>{item.title}</Link>
+                        <Link href={`/posts/${item.slug}?locale=${locale}`}>{item.title}</Link>
                       </h3>
                       {item.excerpt ? (
                         <p className="text-muted-foreground mb-4 leading-relaxed line-clamp-3">{item.excerpt}</p>
@@ -152,7 +162,9 @@ export default async function LatestNews() {
                         {item.author && (
                           <>
                             <span className="mx-2">•</span>
-                            <span>By {item.author}</span>
+                            <span>
+                              {locale === "ta" ? "எழுதியவர்" : "By"} {item.author}
+                            </span>
                           </>
                         )}
                       </div>
@@ -162,8 +174,8 @@ export default async function LatestNews() {
                         className="text-primary hover:text-primary-foreground hover:bg-primary transition-colors"
                         asChild
                       >
-                        <Link href={`/posts/${item.slug}`} className="flex items-center">
-                          Read More
+                        <Link href={`/posts/${item.slug}?locale=${locale}`} className="flex items-center">
+                          {locale === "ta" ? "மேலும் படிக்க" : "Read More"}
                           <ArrowRight className="ml-2 w-4 h-4" />
                         </Link>
                       </Button>
@@ -177,7 +189,9 @@ export default async function LatestNews() {
           {/* Sidebar */}
           <div className="xl:col-span-1 space-y-6">
             <div className="sticky top-24">
-              <h3 className="text-xl font-bold text-foreground mb-6">Recent Updates</h3>
+              <h3 className="text-xl font-bold text-foreground mb-6">
+                {locale === "ta" ? "சமீபத்திய புதுப்பிப்புகள்" : "Recent Updates"}
+              </h3>
               <div className="space-y-4">
                 {sidebarNews.map((item) => (
                   <Card
@@ -197,7 +211,7 @@ export default async function LatestNews() {
                       <CardContent className="flex-1 p-4 flex flex-col justify-between">
                         <div>
                           <h4 className="font-semibold text-foreground text-base mb-2 hover:text-primary transition-colors leading-tight line-clamp-2">
-                            <Link href={`/posts/${item.slug}`}>{item.title}</Link>
+                            <Link href={`/posts/${item.slug}?locale=${locale}`}>{item.title}</Link>
                           </h4>
                         </div>
                         <div className="flex items-center text-sm text-muted-foreground mt-auto">
@@ -211,8 +225,8 @@ export default async function LatestNews() {
               </div>
 
               <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground mt-6" asChild>
-                <Link href="/posts" className="flex items-center justify-center">
-                  View All Posts
+                <Link href={`/posts?locale=${locale}`} className="flex items-center justify-center">
+                  {locale === "ta" ? "அனைத்து இடுகைகளையும் பார்க்க" : "View All Posts"}
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </Link>
               </Button>
