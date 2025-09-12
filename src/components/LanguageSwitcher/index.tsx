@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Globe, ChevronDown } from "lucide-react"
 import { useLocale } from "@/contexts/LocaleContext"
+import { useRouter, useSearchParams } from "next/navigation"
 
 interface LanguageSwitcherProps {
   className?: string
@@ -13,6 +14,8 @@ interface LanguageSwitcherProps {
 
 export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ className = "", variant = "desktop" }) => {
   const { locale: currentLocale, setLocale, isLoading } = useLocale()
+  const router = useRouter()
+  const searchParams = useSearchParams()
 
   const languages = [
     { code: "en" as const, label: "English", flag: "🇺🇸" },
@@ -22,6 +25,10 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ className = 
   const handleLanguageChange = (locale: "en" | "ta") => {
     console.log("[v0] LanguageSwitcher: Changing language to:", locale)
     setLocale(locale)
+
+    const params = new URLSearchParams(searchParams.toString())
+    params.set("locale", locale)
+    router.push(`?${params.toString()}`)
   }
 
   const currentLanguage = languages.find((lang) => lang.code === currentLocale) || languages[0]

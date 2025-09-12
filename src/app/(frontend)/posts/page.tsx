@@ -10,11 +10,12 @@ export const dynamic = "force-static"
 export const revalidate = 600
 
 type PageProps = {
-  searchParams: { [key: string]: string | string[] | undefined }
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }> // Made searchParams async for Next.js 15+ compatibility
 }
 
 export default async function Page({ searchParams }: PageProps) {
-  const locale = (searchParams.locale as string) || "en"
+  const resolvedSearchParams = await searchParams // Await searchParams before accessing properties
+  const locale = (resolvedSearchParams.locale as string) || "en"
 
   const payload = await getPayload({ config: configPromise })
 
@@ -54,12 +55,7 @@ export default async function Page({ searchParams }: PageProps) {
                   <h2 className="text-2xl font-semibold text-foreground mb-2">
                     {locale === "ta" ? "அனைத்து பதிவுகள்" : "All Posts"}
                   </h2>
-                  <PageRange
-                    collection="posts"
-                    currentPage={posts.page}
-                    limit={12}
-                    totalDocs={posts.totalDocs}
-                  />
+                  <PageRange collection="posts" currentPage={posts.page} limit={12} totalDocs={posts.totalDocs} />
                 </div>
               </div>
 
@@ -98,9 +94,7 @@ export default async function Page({ searchParams }: PageProps) {
                       <span className="font-medium text-foreground">{posts.totalDocs}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground text-sm">
-                        {locale === "ta" ? "பக்கங்கள்" : "Pages"}
-                      </span>
+                      <span className="text-muted-foreground text-sm">{locale === "ta" ? "பக்கங்கள்" : "Pages"}</span>
                       <span className="font-medium text-foreground">{posts.totalPages}</span>
                     </div>
                   </div>

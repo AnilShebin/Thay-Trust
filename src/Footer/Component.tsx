@@ -1,6 +1,6 @@
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import Link from 'next/link'
-import React from 'react'
+import type React from 'react'
 
 import type { Footer, Header } from '@/payload-types'
 
@@ -11,11 +11,27 @@ import { Facebook, Instagram, Twitter } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
-export async function Footer() {
-  const footerData: Footer = await getCachedGlobal('footer', 1)()
-  const headerData: Header = await getCachedGlobal('header', 1)()
+export async function FooterComponent() {
+  try {
+    const footerData = (await getCachedGlobal('footer', 1)()) as Footer
+    const headerData = (await getCachedGlobal('header', 1)()) as Header
 
-  return <FooterClient footerData={footerData} headerData={headerData} />
+    return <FooterClient footerData={footerData} headerData={headerData} />
+  } catch (error) {
+    console.error('[v0] Error loading footer data:', error)
+
+    return (
+      <footer className="w-full border-t border-border dark:bg-card">
+        <div className="mx-auto px-4 sm:px-8 md:px-16 lg:px-24 py-8">
+          <div className="text-center">
+            <p className="text-sm text-muted-foreground">
+              © {new Date().getFullYear()} Thay Trust. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
+    )
+  }
 }
 
 interface FooterClientProps {
@@ -23,7 +39,7 @@ interface FooterClientProps {
   headerData: Header
 }
 
-const FooterClient: React.FC<FooterClientProps> = ({ footerData, headerData }) => {
+const FooterClient: React.FC<FooterClientProps> = ({ headerData }) => {
   return (
     <footer className="w-full border-t border-border dark:bg-card">
       <div className="mx-auto px-4 sm:px-8 md:px-16 lg:px-24 py-8">
@@ -153,7 +169,7 @@ const FooterClient: React.FC<FooterClientProps> = ({ footerData, headerData }) =
   )
 }
 
-const SocialLink = ({ icon: Icon, label }: { icon: any; label: string }) => (
+const SocialLink = ({ icon: Icon, label }: { icon: React.ElementType; label: string }) => (
   <Link
     href="#"
     className="flex size-9 items-center justify-center rounded-full bg-primary/5 text-primary transition-all hover:bg-primary/10 hover:text-primary/80 dark:bg-secondary dark:text-primary dark:hover:bg-secondary/80 dark:hover:text-primary/80"
@@ -162,3 +178,5 @@ const SocialLink = ({ icon: Icon, label }: { icon: any; label: string }) => (
     <span className="sr-only">{label}</span>
   </Link>
 )
+
+export { FooterComponent as Footer }

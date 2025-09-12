@@ -33,14 +33,17 @@ export async function generateStaticParams() {
 
 // ----------------- Types -----------------
 type Args = {
-  params: { slug?: string }
-  searchParams?: { [key: string]: string | string[] | undefined }
+  params: Promise<{ slug?: string }>
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 // ----------------- Page Component -----------------
 export default async function Post({ params, searchParams }: Args) {
-  const slug = params?.slug || ""
-  const locale = (searchParams?.locale as "en" | "ta") || "en"
+  const resolvedParams = await params
+  const resolvedSearchParams = await searchParams
+
+  const slug = resolvedParams?.slug || ""
+  const locale = (resolvedSearchParams?.locale as "en" | "ta") || "en"
 
   const { isEnabled: draft } = await draftMode()
   const url = `/posts/${slug}?locale=${locale}`
@@ -78,32 +81,33 @@ export default async function Post({ params, searchParams }: Args) {
 
 // ----------------- Metadata -----------------
 export async function generateMetadata({ params, searchParams }: Args): Promise<Metadata> {
-  const slug = params?.slug || ""
-  const locale = (searchParams?.locale as "en" | "ta") || "en"
+  const resolvedParams = await params
+  const resolvedSearchParams = await searchParams
+
+  const slug = resolvedParams?.slug || ""
+  const locale = (resolvedSearchParams?.locale as "en" | "ta") || "en"
   const post = await queryPostBySlug({ slug, locale })
   return generateMeta({ doc: post })
 }
 
 // ----------------- Helper -----------------
-const queryPostBySlug = cache(
-  async ({ slug, locale = "en" }: { slug: string; locale?: "en" | "ta" }) => {
-    const { isEnabled: draft } = await draftMode()
-    const payload = await getPayload({ config: configPromise })
+const queryPostBySlug = cache(async ({ slug, locale = "en" }: { slug: string; locale?: "en" | "ta" }) => {
+  const { isEnabled: draft } = await draftMode()
+  const payload = await getPayload({ config: configPromise })
 
-    const result = await payload.find({
-      collection: "posts",
-      locale,
-      fallbackLocale: "en",
-      draft,
-      limit: 1,
-      overrideAccess: draft,
-      pagination: false,
-      where: { slug: { equals: slug } },
-    })
+  const result = await payload.find({
+    collection: "posts",
+    locale,
+    fallbackLocale: "en",
+    draft,
+    limit: 1,
+    overrideAccess: draft,
+    pagination: false,
+    where: { slug: { equals: slug } },
+  })
 
-    return result.docs?.[0] || null
-  }
-)
+  return result.docs?.[0] || null
+})
 
 // ---------------- Sidebar ----------------
 function Sidebar({ locale }: { locale: "en" | "ta" }) {
@@ -113,9 +117,7 @@ function Sidebar({ locale }: { locale: "en" | "ta" }) {
         <Card>
           <CardHeader>
             <CardTitle className="text-sm font-bold uppercase">
-              {locale === "ta"
-                ? "குவாண்டம் லீப் AI தினசரி அறிக்கை"
-                : "QuantumLeap AI Daily Brief"}
+              {locale === "ta" ? "குவாண்டம் லீப் AI தினசரி அறிக்கை" : "QuantumLeap AI Daily Brief"}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -124,9 +126,7 @@ function Sidebar({ locale }: { locale: "en" | "ta" }) {
                 ? "சமீபத்திய AI முன்னேற்றங்களும் பார்வைகளும் பற்றிய தகவல்களைப் பெறுங்கள்."
                 : "Stay updated with the latest AI breakthroughs and insights."}
             </p>
-            <Button className="w-full">
-              {locale === "ta" ? "சந்தா" : "Subscribe"}
-            </Button>
+            <Button className="w-full">{locale === "ta" ? "சந்தா" : "Subscribe"}</Button>
           </CardContent>
         </Card>
 
@@ -141,25 +141,17 @@ function Sidebar({ locale }: { locale: "en" | "ta" }) {
               {[
                 {
                   title:
-                    locale === "ta"
-                      ? "நியூரல் நெட்வொர்க்குகளில் புதிய முன்னேற்றம்"
-                      : "New Breakthrough in Neural Networks",
+                    locale === "ta" ? "நியூரல் நெட்வொர்க்குகளில் புதிய முன்னேற்றம்" : "New Breakthrough in Neural Networks",
                   image: "https://placehold.co/900x600",
                   time: "15 minutes",
                 },
                 {
-                  title:
-                    locale === "ta"
-                      ? "AI ஒழுக்க முன்முயற்சி தொடங்கப்பட்டது"
-                      : "AI Ethics Initiative Launched",
+                  title: locale === "ta" ? "AI ஒழுக்க முன்முயற்சி தொடங்கப்பட்டது" : "AI Ethics Initiative Launched",
                   image: "https://placehold.co/900x600",
                   time: "20 minutes",
                 },
                 {
-                  title:
-                    locale === "ta"
-                      ? "குவாண்டம் AI ஆராய்ச்சி புதுப்பிப்பு"
-                      : "Quantum AI Research Update",
+                  title: locale === "ta" ? "குவாண்டம் AI ஆராய்ச்சி புதுப்பிப்பு" : "Quantum AI Research Update",
                   image: "https://placehold.co/900x600",
                   time: "10 minutes",
                 },
@@ -173,9 +165,7 @@ function Sidebar({ locale }: { locale: "en" | "ta" }) {
                     className="mr-4 rounded-lg object-cover"
                   />
                   <div>
-                    <h5 className="mb-2 text-lg font-bold leading-tight">
-                      {item.title}
-                    </h5>
+                    <h5 className="mb-2 text-lg font-bold leading-tight">{item.title}</h5>
                     <Button variant="link" className="p-0 text-primary" asChild>
                       <a href={`/posts/sample-slug?locale=${locale}`}>
                         {locale === "ta" ? "படிக்க" : "Read in"} {item.time}
@@ -196,34 +186,22 @@ function Sidebar({ locale }: { locale: "en" | "ta" }) {
 function RelatedArticles({ locale }: { locale: "en" | "ta" }) {
   const articles = [
     {
-      title:
-        locale === "ta"
-          ? "காலநிலை மாற்றத்தைக் குறைக்கும் AI இன் பங்கு"
-          : "AI's Role in Climate Change Mitigation",
+      title: locale === "ta" ? "காலநிலை மாற்றத்தைக் குறைக்கும் AI இன் பங்கு" : "AI's Role in Climate Change Mitigation",
       image: "https://placehold.co/900x600",
       time: "18 minutes",
     },
     {
-      title:
-        locale === "ta"
-          ? "சுகாதாரத்தில் AI இன் எதிர்காலம்"
-          : "The Future of AI in Healthcare",
+      title: locale === "ta" ? "சுகாதாரத்தில் AI இன் எதிர்காலம்" : "The Future of AI in Healthcare",
       image: "https://placehold.co/900x600",
       time: "25 minutes",
     },
     {
-      title:
-        locale === "ta"
-          ? "நிதியில் AI மாற்றம்"
-          : "How AI is Transforming Finance",
+      title: locale === "ta" ? "நிதியில் AI மாற்றம்" : "How AI is Transforming Finance",
       image: "https://placehold.co/900x600",
       time: "14 minutes",
     },
     {
-      title:
-        locale === "ta"
-          ? "பொறுப்பான AI அபிவிருத்தி"
-          : "Responsible AI Development",
+      title: locale === "ta" ? "பொறுப்பான AI அபிவிருத்தி" : "Responsible AI Development",
       image: "https://placehold.co/900x600",
       time: "17 minutes",
     },

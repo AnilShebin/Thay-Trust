@@ -1,24 +1,45 @@
-'use client'
+"use client"
 
-import { useHeaderTheme } from '@/providers/HeaderTheme'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import type React from 'react'
-import { useEffect, useState } from 'react'
+import { useHeaderTheme } from "@/providers/HeaderTheme"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import type React from "react"
+import { useEffect, useState, Suspense } from "react"
 
-import type { Header } from '@/payload-types'
+import type { Header } from "@/payload-types"
 
-import { Logo } from '@/components/Logo/Logo'
-import { HeaderNav } from './Nav'
-import { HandCoins, Menu } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import { AdminBar } from '@/components/AdminBar'
-import { LanguageSwitcher } from '@/components/LanguageSwitcher'
+import { Logo } from "@/components/Logo/Logo"
+import { HeaderNav } from "./Nav"
+import { HandCoins, Menu, Globe } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { AdminBar } from "@/components/AdminBar"
+import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 
 interface HeaderClientProps {
   data: Header
   adminBarProps?: { preview?: boolean }
+}
+
+const LanguageSwitcherFallback = ({ variant }: { variant?: "desktop" | "mobile" }) => {
+  if (variant === "mobile") {
+    return (
+      <div className="flex flex-col gap-2">
+        <span className="text-sm font-medium text-muted-foreground px-4">Language</span>
+        <div className="flex items-center gap-3 px-4 py-2">
+          <Globe className="w-4 h-4 animate-pulse" />
+          <span>Loading...</span>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <Button variant="ghost" size="sm" className="flex items-center gap-2">
+      <Globe className="w-4 h-4 animate-pulse" />
+      <span className="hidden sm:inline">Loading...</span>
+    </Button>
+  )
 }
 
 export const HeaderClient: React.FC<HeaderClientProps> = ({ data, adminBarProps }) => {
@@ -40,14 +61,14 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, adminBarProps 
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'backdrop-blur-md bg-muted/70 shadow-sm' : 'bg-transparent'
+        isScrolled ? "backdrop-blur-md bg-muted/70 shadow-sm" : "bg-transparent"
       }`}
     >
       {/* ✅ Admin bar always rendered at the top */}
@@ -66,7 +87,9 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, adminBarProps 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-8">
           <HeaderNav data={data} />
-          <LanguageSwitcher variant="desktop" />
+          <Suspense fallback={<LanguageSwitcherFallback variant="desktop" />}>
+            <LanguageSwitcher variant="desktop" />
+          </Suspense>
           <Button className="shadow-sm hover:shadow-md transition-all duration-300 bg-primary dark:text-foreground hover:bg-primary/90 text-primary-foreground rounded-xl">
             <Link href="/donate" className="flex items-center gap-2">
               <HandCoins className="w-4 h-4" />
@@ -83,10 +106,10 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, adminBarProps 
               tabIndex={0}
               className={`flex items-center justify-center size-10 cursor-pointer transition-colors duration-300 ${
                 isScrolled
-                  ? 'text-foreground hover:text-primary'
-                  : pathname === '/'
-                    ? 'text-white hover:text-primary'
-                    : 'text-primary hover:text-primary'
+                  ? "text-foreground hover:text-primary"
+                  : pathname === "/"
+                    ? "text-white hover:text-primary"
+                    : "text-primary hover:text-primary"
               }`}
             >
               <Menu className="size-5" />
@@ -113,23 +136,20 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, adminBarProps 
               <div className="flex-1 py-6">
                 <HeaderNav data={data} />
                 <div className="mt-6 pt-6 border-t border-border/50">
-                  <LanguageSwitcher variant="mobile" />
+                  <Suspense fallback={<LanguageSwitcherFallback variant="mobile" />}>
+                    <LanguageSwitcher variant="mobile" />
+                  </Suspense>
                 </div>
               </div>
 
               {/* Mobile Footer */}
               <div className="p-6">
-                <Button
-                  asChild
-                  className="w-full text-lg py-6 bg-primary dark:text-foreground hover:bg-primary/90"
-                >
+                <Button asChild className="w-full text-lg py-6 bg-primary dark:text-foreground hover:bg-primary/90">
                   <Link href="/donate" onClick={() => setIsOpen(false)}>
                     Donate Now
                   </Link>
                 </Button>
-                <p className="text-center text-sm text-muted-foreground mt-4">
-                  Help us make a difference
-                </p>
+                <p className="text-center text-sm text-muted-foreground mt-4">Help us make a difference</p>
               </div>
             </div>
           </SheetContent>

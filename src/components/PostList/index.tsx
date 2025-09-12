@@ -15,6 +15,18 @@ interface PostListProps {
   fontWeight?: "normal" | "semibold"
 }
 
+// type for lexical rich text content
+interface LexicalNode {
+  text?: string
+  children?: LexicalNode[]
+}
+
+interface LexicalContent {
+  root?: {
+    children?: LexicalNode[]
+  }
+}
+
 export default function PostList({
   post,
   aspect = "square",
@@ -26,20 +38,15 @@ export default function PostList({
 }: PostListProps) {
   const imageProps = post?.heroImage && typeof post.heroImage === "object" ? post.heroImage : null
 
-  const authorImageProps =
-    post?.populatedAuthors?.[0] && typeof post.populatedAuthors[0] === "object"
-      ? null // Author image is not available in the current type structure
-      : null
-
   // Extract excerpt from rich text content
-  const getExcerpt = (content: any): string => {
+  const getExcerpt = (content: LexicalContent | string | undefined): string => {
     if (post.meta?.description) return post.meta.description
     if (typeof content === "string") return content
     if (content?.root?.children) {
       const textContent = content.root.children
-        .map((child: any) => {
+        .map((child) => {
           if (child.children) {
-            return child.children.map((c: any) => c.text || "").join(" ")
+            return child.children.map((c) => c.text || "").join(" ")
           }
           return child.text || ""
         })
@@ -116,7 +123,9 @@ export default function PostList({
 
           <div className="hidden">
             <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">
-              <Link href={`/posts/${pathPrefix ? `${pathPrefix}/` : ""}${post.slug}`}>{getExcerpt(post.content)}</Link>
+              <Link href={`/posts/${pathPrefix ? `${pathPrefix}/` : ""}${post.slug}`}>
+                {getExcerpt(post.content as LexicalContent | string)}
+              </Link>
             </p>
           </div>
 

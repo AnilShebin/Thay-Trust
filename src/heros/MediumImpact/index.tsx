@@ -51,7 +51,7 @@ export const MediumImpactHero: React.FC<Page['hero']> = ({ links, media, richTex
               <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
                 Streamline,{' '}
                 <span className="text-primary">optimize and enhance business processes</span> with
-                the world's most scalable AI platform.
+                the world&apos;s most scalable AI platform.
               </h1>
               <p className="text-xl text-white md:text-2xl">AI + data, online. At any scale.</p>
             </>

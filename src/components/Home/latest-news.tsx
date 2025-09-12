@@ -27,12 +27,45 @@ interface LatestNewsProps {
   locale?: "en" | "ta"
 }
 
+interface PayloadPost {
+  slug: string
+  title: string
+  excerpt?: string
+  createdAt: string
+  heroImage?: {
+    url: string
+  }
+  categories?: Array<
+    | {
+        title: string
+      }
+    | string
+  >
+  populatedAuthors?: Array<{
+    name: string
+  }>
+  content?: DefaultTypedEditorState
+  meta?: {
+    description?: string
+  }
+}
+
+interface PayloadPostsResponse {
+  docs: PayloadPost[]
+}
+
+interface LexicalNode {
+  type: string
+  text?: string
+  children?: LexicalNode[]
+}
+
 function extractTextFromLexical(content: DefaultTypedEditorState): string {
   if (!content?.root?.children) return ""
 
   let text = ""
 
-  function extractFromNode(node: any): void {
+  function extractFromNode(node: LexicalNode): void {
     if (node.type === "text") {
       text += node.text || ""
     } else if (node.children) {
@@ -45,21 +78,55 @@ function extractTextFromLexical(content: DefaultTypedEditorState): string {
 }
 
 export default async function LatestNews({ locale = "en" }: LatestNewsProps) {
-  const payload = await getPayload({ config: configPromise })
+  const translations = {
+    en: {
+      latestArticles: "Latest Articles",
+      recentUpdates: "Recent Updates",
+      by: "By",
+      readMore: "Read More",
+      viewAllPosts: "View All Posts",
+    },
+    ta: {
+      latestArticles: "சமீபத்திய கட்டுரைகள்",
+      recentUpdates: "சமீபத்திய புதுப்பிப்புகள்",
+      by: "எழுதியவர்",
+      readMore: "மேலும் படிக்க",
+      viewAllPosts: "அனைத்து இடுகைகளையும் பார்க்க",
+    },
+  }
 
-  const posts = await payload.find({
-    collection: "posts",
-    locale: locale,
-    fallbackLocale: "en",
-    depth: 2,
-    limit: 10,
-    sort: "-createdAt",
-    overrideAccess: false,
-  })
+  const t = translations[locale]
+
+  let posts: PayloadPostsResponse = { docs: [] } // Updated type annotation
+  try {
+    const payload = await getPayload({ config: configPromise })
+
+    // Add timeout to prevent hanging
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("Database query timeout")), 5000),
+    )
+
+    const queryPromise = payload.find({
+      collection: "posts",
+      locale: locale,
+      fallbackLocale: "en",
+      depth: 2,
+      limit: 10,
+      sort: "-createdAt",
+      overrideAccess: false,
+    })
+
+    const result = await Promise.race([queryPromise, timeoutPromise])
+    posts = result as PayloadPostsResponse // Updated type cast
+  } catch (error) {
+    console.error("Error fetching posts:", error)
+    // Return empty posts structure if database fails
+    posts = { docs: [] }
+  }
 
   const baseURL = process.env.NEXT_PUBLIC_SERVER_URL || process.env.__NEXT_PRIVATE_ORIGIN || "http://localhost:3000"
 
-  const newsItems: NewsItem[] = posts.docs.map((doc: any) => {
+  const newsItems: NewsItem[] = (posts?.docs || []).map((doc: PayloadPost) => {
     let imageUrl = "/placeholder.svg?height=300&width=400"
     if (doc.heroImage?.url) {
       imageUrl = doc.heroImage.url.startsWith("http") ? doc.heroImage.url : `${baseURL}${doc.heroImage.url}`
@@ -109,9 +176,7 @@ export default async function LatestNews({ locale = "en" }: LatestNewsProps) {
     <section className="px-4 py-12 sm:px-6 sm:py-16 md:px-8 md:py-20 lg:px-24 lg:py-24 bg-muted/30">
       <div className="mx-auto max-w-7xl">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-            {locale === "ta" ? "சமீபத்திய கட்டுரைகள்" : "Latest Articles"}
-          </h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-2">{t.latestArticles}</h2>
           <div className="w-16 h-1 bg-primary mx-auto mb-6"></div>
         </div>
 
@@ -163,7 +228,7 @@ export default async function LatestNews({ locale = "en" }: LatestNewsProps) {
                           <>
                             <span className="mx-2">•</span>
                             <span>
-                              {locale === "ta" ? "எழுதியவர்" : "By"} {item.author}
+                              {t.by} {item.author}
                             </span>
                           </>
                         )}
@@ -175,7 +240,7 @@ export default async function LatestNews({ locale = "en" }: LatestNewsProps) {
                         asChild
                       >
                         <Link href={`/posts/${item.slug}?locale=${locale}`} className="flex items-center">
-                          {locale === "ta" ? "மேலும் படிக்க" : "Read More"}
+                          {t.readMore}
                           <ArrowRight className="ml-2 w-4 h-4" />
                         </Link>
                       </Button>
@@ -189,9 +254,7 @@ export default async function LatestNews({ locale = "en" }: LatestNewsProps) {
           {/* Sidebar */}
           <div className="xl:col-span-1 space-y-6">
             <div className="sticky top-24">
-              <h3 className="text-xl font-bold text-foreground mb-6">
-                {locale === "ta" ? "சமீபத்திய புதுப்பிப்புகள்" : "Recent Updates"}
-              </h3>
+              <h3 className="text-xl font-bold text-foreground mb-6">{t.recentUpdates}</h3>
               <div className="space-y-4">
                 {sidebarNews.map((item) => (
                   <Card
@@ -226,7 +289,7 @@ export default async function LatestNews({ locale = "en" }: LatestNewsProps) {
 
               <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground mt-6" asChild>
                 <Link href={`/posts?locale=${locale}`} className="flex items-center justify-center">
-                  {locale === "ta" ? "அனைத்து இடுகைகளையும் பார்க்க" : "View All Posts"}
+                  {t.viewAllPosts}
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </Link>
               </Button>

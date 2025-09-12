@@ -5,8 +5,8 @@ import type { Header } from '@/payload-types'
 import { draftMode } from 'next/headers'
 
 export async function Header() {
-  const headerData: Header = await getCachedGlobal('header', 1)()
-  const { isEnabled } = await draftMode() // ✅ get preview mode status
+  const headerData = (await getCachedGlobal('header', 1)()) as Header
+  const { isEnabled } = await draftMode() // get preview mode status
 
   return <HeaderClient data={headerData} adminBarProps={{ preview: isEnabled }} />
 }

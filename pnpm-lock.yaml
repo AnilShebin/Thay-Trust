@@ -50,6 +50,9 @@ importers:
       '@payloadcms/storage-vercel-blob':
         specifier: ^3.54.0
         version: 3.54.0(@types/react@19.1.8)(monaco-editor@0.52.2)(next@15.4.4(@babel/core@7.28.3)(@playwright/test@1.54.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(payload@3.54.0(graphql@16.11.0)(typescript@5.7.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.7.3)
+      '@payloadcms/translations':
+        specifier: ^3.55.1
+        version: 3.55.1
       '@payloadcms/ui':
         specifier: 3.54.0
         version: 3.54.0(@types/react@19.1.8)(monaco-editor@0.52.2)(next@15.4.4(@babel/core@7.28.3)(@playwright/test@1.54.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(payload@3.54.0(graphql@16.11.0)(typescript@5.7.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.7.3)
@@ -1688,6 +1691,9 @@ packages:
 
   '@payloadcms/translations@3.54.0':
     resolution: {integrity: sha512-21DQ0LaM+6PljjuV8fVdfXq/Icpdaj9kzT3tOoVZumUtiqBYzYU//oVBe2z17lLcoJTRwaG+RK1Pq2oGY1lR1A==}
+
+  '@payloadcms/translations@3.55.1':
+    resolution: {integrity: sha512-iYb0qrx2FNgy3oApsyLJQYzSxip29wPWE+SnN6sW/rllKU8SwFuwOCp/xu994rS3jcBpYQ0Y0EAJ4BqdvJ0dnA==}
 
   '@payloadcms/ui@3.54.0':
     resolution: {integrity: sha512-Io+kUZ41gtFwAhAlLjWXqBww5pGv1h6a6Lbv4wNhOojYi0U9yAir4ddDdnkTs7UAmQlxXEQeQYbQ7z/CmdKHrA==}
@@ -7602,6 +7608,10 @@ snapshots:
       - typescript
 
   '@payloadcms/translations@3.54.0':
+    dependencies:
+      date-fns: 4.1.0
+
+  '@payloadcms/translations@3.55.1':
     dependencies:
       date-fns: 4.1.0
 

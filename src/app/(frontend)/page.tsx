@@ -2,23 +2,30 @@ import { generateMetadata } from './[slug]/page'
 
 import Content from '@/components/Home/content'
 import { FeaturesSectionWithHoverEffects } from '@/components/Home/feature-section-with-hover-effects'
-import Featured from '@/components/Home/featured'
 import Hero from '@/components/Home/hero'
-import LatestNews from '@/components/Home/latest-news'
 import Stats from '@/components/Home/stats'
 import MissionSection from '@/components/Home/mission-section'
+import Featured from '@/components/Home/featured'
+import LatestNews from '@/components/Home/latest-news'
 
-const Home = () => {
+type PageProps = {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+const Home = async ({ searchParams }: PageProps) => {
+  const params = await searchParams
+  const locale = (params.locale as 'en' | 'ta') || 'en'
+
   return (
-    <div>
+    <>
       <Hero />
       <MissionSection />
-      <Featured />
+      <Featured locale={locale} />
       <Content />
-      <LatestNews />
+      <LatestNews locale={locale} />
       <FeaturesSectionWithHoverEffects />
       <Stats />
-    </div>
+    </>
   )
 }
 

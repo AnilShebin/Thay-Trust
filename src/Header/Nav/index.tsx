@@ -23,7 +23,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
 }) => {
   const navItems = data?.navItems || []
   const pathname = usePathname()
-  const [isScrolled, setIsScrolled] = useState(false)
+  const [_isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20)
