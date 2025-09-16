@@ -5,7 +5,7 @@ import type React from 'react'
 import type { Footer, Header } from '@/payload-types'
 
 import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
-import { Logo } from '@/components/Logo/Logo'
+import { FooterLogoLink } from "./FooterLogoLink"
 import { HeaderNav } from '@/Header/Nav'
 import { Facebook, Instagram, Twitter } from 'lucide-react'
 import { Input } from '@/components/ui/input'
@@ -47,13 +47,8 @@ const FooterClient: React.FC<FooterClientProps> = ({ headerData }) => {
           {/* Left column */}
           <div className="flex flex-col items-center space-y-6 lg:col-span-5 lg:items-start">
             <div className="flex items-center justify-center lg:justify-start">
-              <Link href="/" className="flex items-center space-x-2 group">
-                <Logo loading="eager" priority="high" />
-                <div className="flex flex-col justify-center">
-                  <span className="text-xl font-bold italic leading-none">Thay</span>
-                  <span className="text-xl font-bold italic leading-none">Trust</span>
-                </div>
-              </Link>
+             {/* ✅ Client-side Logo Link */}
+              <FooterLogoLink />
             </div>
             <p className="mt-2 max-w-md text-sm text-muted-foreground">
               Taste the difference with fast delivery, smooth pickups, and a dine-in experience

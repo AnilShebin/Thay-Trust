@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { AdminBar } from "@/components/AdminBar"
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
+import { useLocale } from "@/contexts/LocaleContext"
 
 interface HeaderClientProps {
   data: Header
@@ -48,6 +49,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, adminBarProps 
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const { locale } = useLocale()
 
   useEffect(() => {
     setHeaderTheme(null)
@@ -76,7 +78,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, adminBarProps 
 
       <nav className="flex h-18 items-center justify-between px-4 sm:px-8 md:px-16 lg:px-24 py-1 sm:py-2">
         {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2 group">
+        <Link href={`/?locale=${locale}`} className="flex items-center space-x-2 group">
           <Logo loading="eager" priority="high" />
           <div className="flex flex-col justify-center">
             <span className={`text-xl font-bold italic leading-none`}>Thay</span>

@@ -52,7 +52,7 @@ const translations = {
     feature3: {
       title: "மருத்துவ உதவி",
       description:
-        "உயிர்களை காப்பாற்ற மற்றும் பாதிக்கப்படக்கூடிய குடும்பங்களுக்கு நம்பிக்கை அளிக்க சுகாதார உதவி, மருந்துகள் மற்றும் அவசர உதவி வழங்க���தல்.",
+        "உயிர்களை காப்பாற்ற மற்றும் பாதிக்கப்படக்கூடிய குடும்பங்களுக்கு நம்பிக்கை அளிக்க சுகாதார உதவி, மருந்துகள் மற்றும் அவசர உதவி வழங்குதல்.",
     },
   },
 }
@@ -86,7 +86,7 @@ export default function Hero() {
               </Button>
             </Link>
             <Link href="/about">
-              <Button size="lg" variant="outline" className="rounded-full group bg-transparent">
+              <Button size="lg" variant="outline" className="rounded-full group bg-white dark:bg-secondary">
                 <span className="flex items-center gap-2">
                   {t.learnMore}
                   <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
