@@ -5,7 +5,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
 import { Mail, Phone, Send, Clock, MapPin } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { useLocale } from '@/contexts/LocaleContext'
@@ -16,7 +21,7 @@ export default function Contact() {
   const content = {
     en: {
       badge: 'Contact Us',
-      heading: "Let’s start a conversation",
+      heading: 'Let’s start a conversation',
       subtitle:
         "Whether you have a question, a project idea, or simply want to say hello, we'd love to hear from you. Reach out anytime - our team usually replies within 24 - 48 business hours.",
       phone: '(123) 456-7890',
@@ -37,7 +42,8 @@ export default function Contact() {
       faq: [
         {
           question: 'What services do you offer?',
-          answer: 'We provide web development, mobile apps, UI/UX design, and digital marketing solutions.',
+          answer:
+            'We provide web development, mobile apps, UI/UX design, and digital marketing solutions.',
         },
         {
           question: 'How quickly can I expect a response?',
@@ -45,11 +51,13 @@ export default function Contact() {
         },
         {
           question: 'Do you offer free consultations?',
-          answer: 'Yes! We provide a free initial consultation to understand your goals and suggest the best approach.',
+          answer:
+            'Yes! We provide a free initial consultation to understand your goals and suggest the best approach.',
         },
         {
           question: 'Can I visit your office in person?',
-          answer: "Absolutely - we'd be happy to host you. Just let us know in advance so we can schedule your visit.",
+          answer:
+            "Absolutely - we'd be happy to host you. Just let us know in advance so we can schedule your visit.",
         },
       ],
     },
@@ -76,7 +84,8 @@ export default function Contact() {
       faq: [
         {
           question: 'நீங்கள் என்ன சேவைகளை வழங்குகிறீர்கள்?',
-          answer: 'நாங்கள் வலை அபிவிருத்தி, மொபைல் செயலிகள், UI/UX வடிவமைப்பு மற்றும் டிஜிட்டல் மார்க்கெட்டிங் தீர்வுகளை வழங்குகிறோம்.',
+          answer:
+            'நாங்கள் வலை அபிவிருத்தி, மொபைல் செயலிகள், UI/UX வடிவமைப்பு மற்றும் டிஜிட்டல் மார்க்கெட்டிங் தீர்வுகளை வழங்குகிறோம்.',
         },
         {
           question: 'எவ்வாறு விரைவில் பதில் எதிர்பார்க்கலாம்?',
@@ -84,11 +93,13 @@ export default function Contact() {
         },
         {
           question: 'நீங்கள் இலவச ஆலோசனைகள் வழங்குகிறீர்களா?',
-          answer: 'ஆம்! உங்கள் இலக்குகளை புரிந்து கொள்ள மற்றும் சிறந்த அணுகுமுறையை பரிந்துரைக்க ஒரு இலவச தொடக்க ஆலோசனையை வழங்குகிறோம்.',
+          answer:
+            'ஆம்! உங்கள் இலக்குகளை புரிந்து கொள்ள மற்றும் சிறந்த அணுகுமுறையை பரிந்துரைக்க ஒரு இலவச தொடக்க ஆலோசனையை வழங்குகிறோம்.',
         },
         {
           question: 'நான் உங்கள் அலுவலகத்தை நேரில் பார்க்கலாமா?',
-          answer: 'கண்டிப்பாக - உங்களை வரவேற்க மகிழ்ச்சி. முன்கூட்டியே தெரியப்படுத்துங்கள், இதனால் உங்கள் வரவை திட்டமிடலாம்.',
+          answer:
+            'கண்டிப்பாக - உங்களை வரவேற்க மகிழ்ச்சி. முன்கூட்டியே தெரியப்படுத்துங்கள், இதனால் உங்கள் வரவை திட்டமிடலாம்.',
         },
       ],
     },
@@ -134,9 +145,13 @@ export default function Contact() {
           {/* Left Side Info */}
           <div className="flex flex-col gap-10">
             <div className="flex flex-col gap-4">
-              <Badge variant="outline">{t.badge}</Badge>
+              <div>
+                <Badge variant="outline">{t.badge}</Badge>
+              </div>
               <div className="flex flex-col gap-3">
-                <h4 className="font-regular max-w-xl text-left text-3xl tracking-tight md:text-5xl">{t.heading}</h4>
+                <h4 className="font-regular max-w-xl text-left text-3xl tracking-tight md:text-5xl">
+                  {t.heading}
+                </h4>
                 <p className="max-w-xl text-left text-lg leading-relaxed tracking-tight text-muted-foreground lg:max-w-lg">
                   {t.subtitle}
                 </p>
@@ -244,11 +259,21 @@ export default function Contact() {
                 />
               </div>
               <Button className="w-full" type="submit" disabled={isSubmitting}>
-                {isSubmitting ? t.sending : <>{t.sendButton} <Send className="ml-2 h-4 w-4" /></>}
+                {isSubmitting ? (
+                  t.sending
+                ) : (
+                  <>
+                    {t.sendButton} <Send className="ml-2 h-4 w-4" />
+                  </>
+                )}
               </Button>
             </form>
-            {submitStatus === 'success' && <p className="text-center text-green-600 dark:text-green-400">{t.success}</p>}
-            {submitStatus === 'error' && <p className="text-center text-red-600 dark:text-red-400">{t.error}</p>}
+            {submitStatus === 'success' && (
+              <p className="text-center text-green-600 dark:text-green-400">{t.success}</p>
+            )}
+            {submitStatus === 'error' && (
+              <p className="text-center text-red-600 dark:text-red-400">{t.error}</p>
+            )}
           </div>
         </div>
       </div>
