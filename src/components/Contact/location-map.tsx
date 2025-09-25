@@ -1,19 +1,42 @@
+'use client'
+import { useLocale } from '@/contexts/LocaleContext'
+
 export default function LocationMap() {
+  const { locale } = useLocale()
+
+  const content = {
+    en: {
+      badge: 'Our Location',
+      heading: 'Our Location',
+      subtitle:
+        "Visit our office in Bella Vista, NSW. We're conveniently located and easily accessible.",
+    },
+    ta: {
+      badge: 'எங்கள் இடம்',
+      heading: 'எங்கள் இடம்',
+      subtitle:
+        'எங்கள் அலுவலகத்தை பெல்லா விஸ்டா, நியூ சவுத் வேல்ஸில் பாருங்கள். எங்களை எளிதாக கண்டுபிடிக்கவும் அணுகவும் முடியும்.',
+    },
+  }
+
+  const t = content[locale as 'en' | 'ta']
+
   return (
     <section className="py-16 px-4 md:py-24">
       <div className="mx-auto max-w-7xl">
         <div className="text-center mb-12">
           <div className="mb-2 flex items-center justify-center">
             <div className="h-1 w-12 bg-primary mr-4"></div>
-            <p className="text-primary font-medium uppercase tracking-wider text-sm">Our Location</p>
+            <p className="text-primary font-medium uppercase tracking-wider text-sm">
+              {t.badge}
+            </p>
             <div className="h-1 w-12 bg-primary ml-4"></div>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-medium mb-4">
-            Our <span className="text-primary">Location</span>
+            {t.heading.split(' ')[0]}{' '}
+            <span className="text-primary">{t.heading.split(' ')[1]}</span>
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Visit our office in Bella Vista, NSW. We&apos;re conveniently located and easily accessible.
-          </p>
+          <p className="text-gray-600 max-w-2xl mx-auto">{t.subtitle}</p>
         </div>
         <div className="relative overflow-hidden rounded-xl shadow-md h-[500px] border border-gray-100">
           <iframe
