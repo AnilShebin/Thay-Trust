@@ -1,9 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { /* Play, X, */ Calendar, Users, Eye, Building } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { useState } from "react"
+import { Calendar, Users, Eye, Building } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { useLocale } from "@/contexts/LocaleContext"
 

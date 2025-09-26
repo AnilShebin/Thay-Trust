@@ -6,11 +6,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { useLocale } from "@/contexts/LocaleContext"
 
-interface Mentor {
-  name: string;
-  role: string;
-  image: string;
-}
+// interface Mentor {
+//   name: string;
+//   role: string;
+//   image: string;
+// }
 
 export default function MentorsSection() {
   const { locale } = useLocale();

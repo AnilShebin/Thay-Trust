@@ -30,6 +30,7 @@ const DonateForm = () => {
 
   const { locale } = useLocale()
 
+  // ✅ Translations only for static content
   const content = {
     en: {
       leftTitle: "Make a Difference Today",
@@ -57,27 +58,6 @@ const DonateForm = () => {
 
       badge: "Let’s connect with us",
       formTitle: "Provide Your Details",
-      fields: {
-        donorName: "Name of the Donor",
-        address: "Address with PIN Code",
-        email: "Email",
-        mobile: "Mobile Number",
-        pan: "PAN No.",
-        amount: "Amount",
-        remarks: "Remarks",
-      },
-      placeholders: {
-        donorName: "Name of the Donor",
-        address: "Address with PIN Code",
-        email: "Please enter email",
-        mobile: "Please enter mobile number",
-        pan: "PAN No.",
-        amount: "Amount",
-        remarks: "Remarks",
-      },
-      terms: "I accept the Terms & Conditions",
-      submit: "Show Bank Details",
-      afterSubmit: "After submitting this form, our team will contact you shortly.",
 
       bankTitle: "Bank Details for Your Donation",
       bank: {
@@ -118,27 +98,6 @@ const DonateForm = () => {
 
       badge: "எங்களுடன் தொடர்பு கொள்ளுங்கள்",
       formTitle: "உங்கள் விவரங்களை வழங்கவும்",
-      fields: {
-        donorName: "தானதாரரின் பெயர்",
-        address: "முகவரி மற்றும் அஞ்சல் குறியீடு",
-        email: "மின்னஞ்சல்",
-        mobile: "மொபைல் எண்",
-        pan: "PAN எண்",
-        amount: "தொகை",
-        remarks: "குறிப்புகள்",
-      },
-      placeholders: {
-        donorName: "தானதாரரின் பெயர்",
-        address: "முகவரி மற்றும் அஞ்சல் குறியீடு",
-        email: "மின்னஞ்சலை உள்ளிடவும்",
-        mobile: "மொபைல் எண்ணை உள்ளிடவும்",
-        pan: "PAN எண்",
-        amount: "தொகை",
-        remarks: "குறிப்புகள்",
-      },
-      terms: "நான் விதிமுறைகள் மற்றும் நிபந்தனைகளை ஏற்கிறேன்",
-      submit: "வங்கி விவரங்களை காண்பிக்கவும்",
-      afterSubmit: "இந்தப் படிவத்தை சமர்ப்பித்த பிறகு எங்கள் குழு விரைவில் உங்களைத் தொடர்புகொள்ளும்.",
 
       bankTitle: "உங்கள் நன்கொடைக்கான வங்கி விவரங்கள்",
       bank: {
@@ -253,26 +212,27 @@ const DonateForm = () => {
                 <h1 className="text-2xl font-bold mb-6 text-foreground">{t.formTitle}</h1>
 
                 <form onSubmit={handleSubmit} className="space-y-5">
-                  {(["donorName", "address", "email", "mobile", "pan", "amount"] as const).map((field) => (
-                    <div key={field}>
-                      <Label htmlFor={field} className="block text-sm font-medium text-foreground mb-1">
-                        {t.fields[field]} <span className="text-destructive">*</span>
+                  {[
+                    { id: "donorName", label: "Name of the Donor", type: "text" },
+                    { id: "address", label: "Address with PIN Code", type: "text" },
+                    { id: "email", label: "Email", type: "email" },
+                    { id: "mobile", label: "Mobile Number", type: "tel" },
+                    { id: "pan", label: "PAN No.", type: "text" },
+                    { id: "amount", label: "Amount", type: "number" },
+                  ].map((field) => (
+                    <div key={field.id}>
+                      <Label htmlFor={field.id} className="block text-sm font-medium text-foreground mb-1">
+                        {field.label} <span className="text-destructive">*</span>
                       </Label>
-                      <Input
-                        id={field}
-                        name={field}
-                        type={field === "email" ? "email" : field === "mobile" ? "tel" : field === "amount" ? "number" : "text"}
-                        required
-                        placeholder={t.placeholders[field]}
-                      />
+                      <Input id={field.id} name={field.id} type={field.type} required placeholder={field.label} />
                     </div>
                   ))}
 
                   <div>
                     <Label htmlFor="remarks" className="block text-sm font-medium text-foreground mb-1">
-                      {t.fields.remarks}
+                      Remarks
                     </Label>
-                    <Textarea id="remarks" name="remarks" rows={3} placeholder={t.placeholders.remarks} />
+                    <Textarea id="remarks" name="remarks" rows={3} placeholder="Remarks" />
                   </div>
 
                   <div className="flex items-center space-x-2">
@@ -282,17 +242,19 @@ const DonateForm = () => {
                       onCheckedChange={(checked) => setTermsAccepted(!!checked)}
                     />
                     <Label htmlFor="terms" className="text-sm text-muted-foreground cursor-pointer">
-                      {t.terms}
+                      I accept the Terms & Conditions
                     </Label>
                   </div>
 
                   <div className="mt-4">
                     <Button type="submit" className="w-full" disabled={!termsAccepted}>
-                      {t.submit}
+                      Show Bank Details
                     </Button>
                   </div>
 
-                  <p className="text-xs text-muted-foreground text-center mt-2">{t.afterSubmit}</p>
+                  <p className="text-xs text-muted-foreground text-center mt-2">
+                    After submitting this form, our team will contact you shortly.
+                  </p>
                 </form>
               </TabsContent>
 
