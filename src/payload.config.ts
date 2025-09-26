@@ -19,6 +19,8 @@ import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { LinkFeature, UploadFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import { getServerSideURL } from './utilities/getURL'
+import { ta } from '@payloadcms/translations/languages/ta'
+import { en } from '@payloadcms/translations/languages/en'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -113,6 +115,9 @@ export default buildConfig({
     ],
     defaultLocale: 'en', // default language
     fallback: true, // fallback to default if translation is missing
+  },
+    i18n: {
+    supportedLanguages: { en, ta },
   },
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
