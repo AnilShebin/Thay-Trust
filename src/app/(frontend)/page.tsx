@@ -20,10 +20,10 @@ const Home = async ({ searchParams }: PageProps) => {
     <>
       <Hero />
       <MissionSection />
+      <FeaturesSectionWithHoverEffects />
       <Featured locale={locale} />
       <Content />
       <LatestNews locale={locale} />
-      <FeaturesSectionWithHoverEffects />
       <Stats />
     </>
   )

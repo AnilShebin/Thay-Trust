@@ -1,58 +1,60 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import { ArrowRight, HandHelping, Users, WandSparkles, Zap } from "lucide-react"
-import Link from "next/link"
-import Image from "next/image"
-import { Badge } from "../ui/badge"
-import { useLocale } from "@/contexts/LocaleContext"
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
+import { ArrowRight, HandHelping, Users, WandSparkles, Zap } from 'lucide-react'
+import Link from 'next/link'
+import Image from 'next/image'
+import { Badge } from '../ui/badge'
+import { useLocale } from '@/contexts/LocaleContext'
 
 const translations = {
   en: {
-    badge: "Your Kindness, Their Hope",
-    title1: "Together We ",
-    title2: "Can ",
-    title3: "Uplift Lives",
-    donateNow: "Donate Now",
-    learnMore: "Learn More",
+    badge: 'Your Kindness, Their Hope',
+    title1: 'Together We ',
+    title2: 'Can ',
+    title3: 'Uplift Lives',
+    donateNow: 'Donate Now',
+    learnMore: 'Learn More',
     feature1: {
-      title: "Supporting Education",
+      title: 'Supporting Education',
       description:
-        "Helping underprivileged students with scholarships, books, and guidance to secure a brighter future.",
+        'Helping underprivileged students with scholarships, books, and guidance to secure a brighter future.',
     },
     feature2: {
-      title: "Empowering Women",
+      title: 'Empowering Women',
       description:
-        "Providing unmarried women with skills, resources, and financial support to live with dignity and independence.",
+        'Providing unmarried women with skills, resources, and financial support to live with dignity and independence.',
     },
     feature3: {
-      title: "Medical Relief",
+      title: 'Medical Relief',
       description:
-        "Offering healthcare aid, medicines, and emergency support to save lives and bring hope to vulnerable families.",
+        'Offering healthcare aid, medicines, and emergency support to save lives and bring hope to vulnerable families.',
     },
   },
   ta: {
-    badge: "உங்கள் கருணை, அவர்களின் நம்பிக்கை",
-    title1: "நாம் ஒன்றாக ",
-    title2: "வாழ்க்கையை ",
-    title3: "உயர்த்த முடியும்",
-    donateNow: "இப்போது நன்கொடை",
-    learnMore: "மேலும் அறிய",
+    badge: 'உங்கள் அன்பு, அவர்களின் நம்பிக்கை',
+    title1: 'ஒன்றிணைந்து நாம் ',
+    title2: 'வாழ்வுகளை ',
+    title3: 'உயர்த்தலாம்',
+    donateNow: 'நன்கொடை',
+    learnMore: 'மேலும் அறிய',
     feature1: {
-      title: "கல்வியை ஆதரித்தல்",
-      description: "ஏழை மாணவர்களுக்கு உதவித்தொகை, புத்தகங்கள் மற்றும் வழிகாட்டுதலுடன் பிரகாசமான எதிர்காலத்தை உறுதி செய்தல்.",
+      title: 'கல்வியை ஆதரித்தல்',
+      description:
+        'ஏழை மாணவர்களுக்கு உதவித்தொகை, புத்தகங்கள் மற்றும் வழிகாட்டுதலுடன் பிரகாசமான எதிர்காலத்தை உறுதி செய்தல்.',
     },
     feature2: {
-      title: "பெண்களை வலுப்படுத்துதல்",
-      description: "திருமணமாகாத பெண்களுக்கு திறமைகள், வளங்கள் மற்றும் நிதி உதவியுடன் கண்ணியமாக வாழ உதவுதல்.",
+      title: 'பெண்களை வலுப்படுத்துதல்',
+      description:
+        'திருமணமாகாத பெண்களுக்கு திறமைகள், வளங்கள் மற்றும் நிதி உதவியுடன் கண்ணியமாக வாழ உதவுதல்.',
     },
     feature3: {
-      title: "மருத்துவ உதவி",
+      title: 'மருத்துவ உதவி',
       description:
-        "உயிர்களை காப்பாற்ற மற்றும் பாதிக்கப்படக்கூடிய குடும்பங்களுக்கு நம்பிக்கை அளிக்க சுகாதார உதவி, மருந்துகள் மற்றும் அவசர உதவி வழங்குதல்.",
+        'உயிர்களை காப்பாற்ற மற்றும் பாதிக்கப்படக்கூடிய குடும்பங்களுக்கு நம்பிக்கை அளிக்க சுகாதார உதவி, மருந்துகள் மற்றும் அவசர உதவி வழங்குதல்.',
     },
   },
 }
@@ -75,10 +77,11 @@ export default function Hero() {
 
           <h1 className="text-primary dark:text-foreground text-4xl font-semibold lg:text-6xl">
             <span className="text-foreground">{t.title1}</span>
-            <span className="text-primary">
-              {t.title2} <br /> {t.title3}
+            <span className="text-primary flex gap-2 mt-2">
+              {t.title2} {t.title3}
             </span>
           </h1>
+
           <div className="flex gap-4 mt-4">
             <Link href="/donate">
               <Button size="lg" className="rounded-full dark:text-foreground">
@@ -86,7 +89,11 @@ export default function Hero() {
               </Button>
             </Link>
             <Link href="/about">
-              <Button size="lg" variant="outline" className="rounded-full group bg-white dark:bg-secondary">
+              <Button
+                size="lg"
+                variant="outline"
+                className="rounded-full group bg-white dark:bg-secondary"
+              >
                 <span className="flex items-center gap-2">
                   {t.learnMore}
                   <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />

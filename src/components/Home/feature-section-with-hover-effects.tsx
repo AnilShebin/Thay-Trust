@@ -1,19 +1,19 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils'
 import {
-  IconAdjustmentsBolt,
-  IconCloud,
-  IconCurrencyDollar,
-  IconEaseInOut,
+  IconBook,
+  IconCloudStorm,
+  IconEyeOff,
   IconHeart,
-  IconHelp,
-  IconRouteAltLeft,
-  IconTerminal2,
-} from "@tabler/icons-react"
-import { useLocale } from "@/contexts/LocaleContext"
+  IconMedicalCross,
+  IconSoup,
+  IconStar,
+  IconWoman,
+} from '@tabler/icons-react'
+import { useLocale } from '@/contexts/LocaleContext'
 
 export function FeaturesSectionWithHoverEffects() {
   const { locale } = useLocale()
@@ -22,72 +22,76 @@ export function FeaturesSectionWithHoverEffects() {
     en: {
       features: [
         {
-          title: "Built for developers",
-          description: "Built for engineers, developers, dreamers, thinkers and doers.",
+          title: 'Annadhanam',
+          description: 'Providing free meals to the needy with love and care.',
         },
         {
-          title: "Ease of use",
-          description: "It's as easy as using an Apple, and as expensive as buying one.",
+          title: 'Education',
+          description:
+            'Supporting education for underprivileged children to build a brighter future.',
         },
         {
-          title: "Pricing like no other",
-          description: "Our prices are best in the market. No cap, no lock, no credit card required.",
+          title: 'Helps to Blinds',
+          description: 'Extending support and assistance to visually challenged individuals.',
         },
         {
-          title: "100% Uptime guarantee",
-          description: "We just cannot be taken down by anyone.",
+          title: 'Medical Aid',
+          description: 'Offering medical assistance and financial help for treatments.',
         },
         {
-          title: "Multi-tenant Architecture",
-          description: "You can simply share passwords instead of buying new seats",
+          title: 'Natural Calamities',
+          description: 'Helping people affected by floods, cyclones, and other natural disasters.',
         },
         {
-          title: "24/7 Customer Support",
-          description: "We are available a 100% of the time. Atleast our AI Agents are.",
+          title: 'Women Empowerment',
+          description: 'Encouraging and supporting women through education and opportunities.',
         },
         {
-          title: "Money back guarantee",
-          description: "If you donot like EveryAI, we will convince you to like us.",
+          title: 'Orphan Support',
+          description: 'Providing care, education, and support for orphans and destitute children.',
         },
         {
-          title: "And everything else",
-          description: "I just ran out of copy ideas. Accept my sincere apologies",
+          title: 'Other Activities',
+          description: 'Conducting social welfare programs for the betterment of society.',
         },
       ],
     },
     ta: {
       features: [
         {
-          title: "டெவலப்பர்களுக்காக உருவாக்கப்பட்டது",
-          description: "பொறியாளர்கள், டெவலப்பர்கள், கனவு காண்பவர்கள், சிந்தனையாளர்கள் மற்றும் செயல்படுபவர்களுக்காக உருவாக்கப்பட்டது.",
+          title: 'அன்னதானம்',
+          description: 'அன்பும் அக்கறையும் கொண்டு தேவையுள்ளவர்களுக்கு இலவச உணவு வழங்குதல்.',
         },
         {
-          title: "பயன்படுத்த எளிது",
-          description: "ஆப்பிளைப் பயன்படுத்துவது போல் எளிது, ஆனால் அதை வாங்குவது போல் விலை உயர்ந்தது.",
+          title: 'கல்வி',
+          description:
+            'குழந்தைகளுக்கு கல்வியால் சிறந்த எதிர்காலம் உருவாக்குதல்.',
         },
         {
-          title: "தனித்துவமான விலை நிர்ணயம்",
-          description: "எங்கள் விலைகள் சந்தையில் சிறந்தவை. வரம்பு இல்லை, பூட்டு இல்லை, கிரெடிட் கார்டு தேவையில்லை.",
+          title: 'பார்வையற்றோருக்கு உதவி',
+          description: 'பார்வையற்றவர்களுக்கு உதவி மற்றும் ஆதரவு வழங்குதல்.',
         },
         {
-          title: "100% அப்டைம் உத்தரவாதம்",
-          description: "எங்களை யாராலும் கீழே இறக்க முடியாது.",
+          title: 'மருத்துவ உதவி',
+          description: 'சிகிச்சைக்கான மருத்துவ மற்றும் நிதி உதவிகளை வழங்குதல்.',
         },
         {
-          title: "மல்டி-டெனன்ட் கட்டமைப்பு",
-          description: "புதிய இடங்களை வாங்குவதற்கு பதிலாக நீங்கள் கடவுச்சொற்களை பகிர்ந்து கொள்ளலாம்",
+          title: 'இயற்கை பேரிடர்கள்',
+          description:
+            'வெள்ளம், புயல் போன்ற பேரிடரில் பாதிக்கப்பட்டவர்களுக்கு உதவி.',
         },
         {
-          title: "24/7 வாடிக்கையாளர் ஆதரவு",
-          description: "நாங்கள் 100% நேரம் கிடைக்கிறோம். குறைந்தபட்சம் எங்கள் AI ஏஜென்ட்கள் கிடைக்கின்றன.",
+          title: 'பெண்களின் முன்னேற்றம்',
+          description: 'கல்வி மற்றும் வாய்ப்புகள் மூலம் பெண்களை ஊக்குவித்து ஆதரித்தல்.',
         },
         {
-          title: "பணம் திரும்ப உத்தரவாதம்",
-          description: "நீங்கள் EveryAI ஐ விரும்பவில்லை என்றால், உங்களை விரும்பும்படி நாங்கள் சமாதானப்படுத்துவோம்.",
+          title: 'ஆதரவற்ற குழந்தைகளுக்கு உதவி',
+          description:
+            'ஆதரவற்ற குழந்தைகளுக்கு கல்வி மற்றும் பராமரிப்பு.',
         },
         {
-          title: "மற்றும் எல்லாம்",
-          description: "எனக்கு நகல் யோசனைகள் தீர்ந்துவிட்டன. என் மன்னிப்பை ஏற்றுக்கொள்ளுங்கள்",
+          title: 'பிற செயல்பாடுகள்',
+          description: 'சமூக நலத்திற்கான பல்வேறு திட்டங்களை மேற்கொள்வது.',
         },
       ],
     },
@@ -96,14 +100,14 @@ export function FeaturesSectionWithHoverEffects() {
   const features = translations[locale].features.map((feature, index) => ({
     ...feature,
     icon: [
-      <IconTerminal2 key="terminal" />,
-      <IconEaseInOut key="ease" />,
-      <IconCurrencyDollar key="currency" />,
-      <IconCloud key="cloud" />,
-      <IconRouteAltLeft key="route" />,
-      <IconHelp key="help" />,
-      <IconAdjustmentsBolt key="adjustment" />,
-      <IconHeart key="heart" />,
+      <IconSoup key="annadhanam" />, // Annadhanam (food donation)
+      <IconBook key="education" />, // Education
+      <IconEyeOff key="blind" />, // Helps to Blinds
+      <IconMedicalCross key="medical" />, // Medical Aid
+      <IconCloudStorm key="calamities" />, // Natural Calamities
+      <IconWoman key="women" />, // Women Empowerment
+      <IconStar key="support" />, // Social Support / New Added Title
+      <IconHeart key="others" />, // Other Activities
     ][index],
   }))
 
@@ -130,9 +134,9 @@ const Feature = ({
   return (
     <div
       className={cn(
-        "flex flex-col lg:border-r  py-10 relative group/feature dark:border-neutral-800",
-        (index === 0 || index === 4) && "lg:border-l dark:border-neutral-800",
-        index < 4 && "lg:border-b dark:border-neutral-800",
+        'flex flex-col lg:border-r  py-10 relative group/feature dark:border-neutral-800',
+        (index === 0 || index === 4) && 'lg:border-l dark:border-neutral-800',
+        index < 4 && 'lg:border-b dark:border-neutral-800',
       )}
     >
       {index < 4 && (
@@ -148,7 +152,9 @@ const Feature = ({
           {title}
         </span>
       </div>
-      <p className="text-sm text-neutral-600 dark:text-neutral-300 max-w-xs relative z-10 px-10">{description}</p>
+      <p className="text-sm text-neutral-600 dark:text-neutral-300 max-w-xs relative z-10 px-10">
+        {description}
+      </p>
     </div>
   )
 }
